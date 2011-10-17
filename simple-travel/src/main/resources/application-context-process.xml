@@ -39,5 +39,6 @@
   <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
   <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
   <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
+  <bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
    	
 </beans>

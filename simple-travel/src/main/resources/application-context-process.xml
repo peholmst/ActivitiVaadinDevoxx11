@@ -19,6 +19,8 @@
   	<property name="dataSource" ref="dataSource" />
   </bean>
   
+  <tx:annotation-driven mode="aspectj"/>
+  
   <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
   	<property name="dataSource" ref="dataSource" />
   	<property name="transactionManager" ref="transactionManager" />
@@ -36,5 +38,6 @@
   <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
   <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
   <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
+  <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
    	
 </beans>

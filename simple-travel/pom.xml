@@ -13,6 +13,7 @@
         <vaadin.version>6.7.0</vaadin.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <aspectj.version>1.6.11</aspectj.version>
+        <slf4j.version>1.6.2</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -126,6 +127,18 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
+        
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>           
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jcl</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>           
     </dependencies>
     <build>
         <finalName>simple-travel</finalName>

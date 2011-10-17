@@ -9,7 +9,7 @@
        
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
     <property name="driverClassName" value="org.h2.Driver" />
-    <property name="url" value="$dbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
+    <property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
     <property name="username" value="sa" />
     <property name="password" value="" />
      <property name="defaultAutoCommit" value="false" />
@@ -29,5 +29,12 @@
   <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
   	<property name="processEngineConfiguration" ref="processEngineConfiguration" />
   </bean>
+  
+  <!-- Exposing the Activiti services as beans -->
+  <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+  <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+  <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
+  <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+  <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
    	
 </beans>

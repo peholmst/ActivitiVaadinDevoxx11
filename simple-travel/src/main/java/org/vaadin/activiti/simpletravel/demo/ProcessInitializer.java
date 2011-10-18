@@ -2,6 +2,7 @@ package org.vaadin.activiti.simpletravel.demo;
 
 import javax.annotation.PostConstruct;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.slf4j.Logger;
@@ -11,10 +12,13 @@ import org.springframework.stereotype.Component;
 import org.vaadin.activiti.simpletravel.identity.Groups;
 
 @Component
-public class DemoUserInitializer implements Groups {
+public class ProcessInitializer implements Groups {
     
     @Autowired
     private IdentityService identityService;
+    
+    @Autowired
+    private RepositoryService repositoryService;
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
         
@@ -22,6 +26,7 @@ public class DemoUserInitializer implements Groups {
     public void setUp() {
         setUpGroups();
         setUpUsers();
+        deployProcess();
     }
     
     
@@ -57,5 +62,10 @@ public class DemoUserInitializer implements Groups {
         Group group = identityService.newGroup(groupId);
         group.setName(name);
         identityService.saveGroup(group);
+    }
+    
+    private void deployProcess() {
+        logger.info("Deploying process");
+        repositoryService.createDeployment().addClasspathResource("process/simple-travel.bpmn20.xml").deploy();
     }
 }

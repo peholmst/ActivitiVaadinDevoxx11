@@ -8,20 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.vaadin.activiti.simpletravel.identity.Groups;
 
 @Component
-public class DemoUserInitializer {
+public class DemoUserInitializer implements Groups {
     
     @Autowired
     private IdentityService identityService;
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
-    private static final String GROUP_TRAVELERS = "travelers";
-    private static final String GROUP_SECRETARIES = "secretaries";
-    private static final String GROUP_MANAGERS = "managers";
-    private static final String GROUP_PAYROLLADMINS = "payrolladmins";
-    
+        
     @PostConstruct
     public void setUp() {
         setUpGroups();

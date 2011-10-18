@@ -2,17 +2,16 @@ package org.vaadin.activiti.simpletravel.ui;
 
 import com.vaadin.Application;
 import com.vaadin.service.ApplicationContext.TransactionListener;
-import org.activiti.engine.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
+import org.vaadin.activiti.simpletravel.identity.CurrentUserFactoryBean;
 
 @Configurable
 public class SimpleTravelApplication extends Application implements TransactionListener {
 
     @Autowired
-    protected transient IdentityService identityService;
-    
+    protected transient CurrentUserFactoryBean currentUserFactoryBean;
+
     @Override
     public void init() {
         getContext().addTransactionListener(this);
@@ -24,16 +23,16 @@ public class SimpleTravelApplication extends Application implements TransactionL
         setUser(null);
         getContext().removeTransactionListener(this);
         super.close();
-    }   
-    
+    }
+
     @Override
     public void transactionStart(Application application, Object transactionData) {
-        identityService.setAuthenticatedUserId((String) getUser());
+        String username = (String) getUser();
+        currentUserFactoryBean.setCurrentUsername(username);
     }
 
     @Override
     public void transactionEnd(Application application, Object transactionData) {
-        identityService.setAuthenticatedUserId(null);
+        currentUserFactoryBean.setCurrentUsername(null);
     }
-    
 }

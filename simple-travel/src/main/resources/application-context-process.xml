@@ -32,15 +32,16 @@
         <property name="processEngineConfiguration" ref="processEngineConfiguration" />
     </bean>
   
-  <!-- Exposing the Activiti services as beans -->
-  <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
-  <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
-  <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
-  <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
-  <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
-  <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
-  <bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
+    <!-- Exposing the Activiti services as beans -->
+    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
+    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
+    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
+    <bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
    	
     <context:component-scan base-package="org.vaadin.activiti.simpletravel.demo"/>
+    <context:component-scan base-package="org.vaadin.activiti.simpletravel.identity"/>
         
 </beans>

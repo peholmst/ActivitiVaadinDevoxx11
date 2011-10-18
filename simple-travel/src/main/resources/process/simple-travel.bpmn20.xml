@@ -15,6 +15,11 @@
       <extensionElements>
         <activiti:formProperty id="approveTravel" name="Approve " type="boolean" required="true" readable="true" writable="true"></activiti:formProperty>
         <activiti:formProperty id="approvalMotivation" name="Motivation" type="string" required="true" readable="true" writable="true"></activiti:formProperty>
+        <activiti:taskListener event="assignment" class="org.vaadin.activiti.simpletravel.process.CurrentLoggedInUserTaskListener">
+          <activiti:field name="variableName">
+            <activiti:string>approvingManager</activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="exclusivegateway1" name="Travel aproval gateway"></exclusiveGateway>
@@ -26,7 +31,7 @@
     <serviceTask id="mailtask1" name="Travel Rejected Mail" activiti:type="mail">
       <extensionElements>
         <activiti:field name="to" expression="${employeeService.getEmailAddress(initiator)}"></activiti:field>
-        <activiti:field name="from" expression="vacation-requests@vaadin-activiti.org"></activiti:field>
+        <activiti:field name="from" expression="no-reply@vaadin-activiti.org"></activiti:field>
         <activiti:field name="subject" expression="Your vacation request to go to ${destinationCountry} has been rejected"></activiti:field>
         <activiti:field name="text">
           <activiti:expression><![CDATA[Dear ${initiator},

@@ -45,6 +45,5 @@
     <bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
    	
     <context:component-scan base-package="org.vaadin.activiti.simpletravel.demo"/>
-    <context:component-scan base-package="org.vaadin.activiti.simpletravel.identity"/>
-        
+    <context:component-scan base-package="org.vaadin.activiti.simpletravel.identity"/>        
 </beans>

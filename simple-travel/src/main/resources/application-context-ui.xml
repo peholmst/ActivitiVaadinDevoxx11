@@ -9,5 +9,8 @@
        
     <context:annotation-config />
     <context:spring-configured />
-    <context:component-scan base-package="org.vaadin.activiti.simpletravel.ui"/>
+    
+    <bean class="org.vaadin.activiti.simpletravel.ui.forms.impl.FormViewServiceImpl">
+        <property name="packagesToScan" value="org.vaadin.activiti.simpletravel.process.ui"/>
+    </bean>
 </beans>

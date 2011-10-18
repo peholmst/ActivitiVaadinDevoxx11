@@ -1,4 +1,4 @@
-package org.vaadin.activiti.simpletravel.ui.login;
+package org.vaadin.activiti.simpletravel.ui.login.components;
 
 import com.github.peholmst.mvp4vaadin.AbstractViewComponent;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -13,6 +13,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Reindeer;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.activiti.simpletravel.ui.login.LoginPresenter;
+import org.vaadin.activiti.simpletravel.ui.login.LoginView;
 
 @Configurable
 public class LoginViewComponent extends AbstractViewComponent<LoginView, LoginPresenter> implements LoginView {

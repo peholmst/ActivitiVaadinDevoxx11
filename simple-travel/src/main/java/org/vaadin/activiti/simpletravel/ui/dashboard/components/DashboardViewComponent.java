@@ -1,6 +1,8 @@
-package org.vaadin.activiti.simpletravel.ui.dashboard;
+package org.vaadin.activiti.simpletravel.ui.dashboard.components;
 
 import com.github.peholmst.mvp4vaadin.AbstractViewComponent;
+import com.github.peholmst.mvp4vaadin.VaadinView;
+import com.github.peholmst.mvp4vaadin.View;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -10,7 +12,12 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+import java.util.List;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardPresenter;
+import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardView;
 
 @Configurable
 public class DashboardViewComponent extends AbstractViewComponent<DashboardView, DashboardPresenter> implements DashboardView {
@@ -21,6 +28,7 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     private HorizontalSplitPanel splitPanel;
     private Accordion sidebar;
     private Label currentUser;
+    private ProcessDefinitionList availableProcesses;
 
     @Override
     protected Component createCompositionRoot() {
@@ -79,13 +87,47 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     }
 
     private Accordion createSidebar() {
-        final Accordion accordion = new Accordion();
+        final Accordion accordion = new Accordion();                
         accordion.setSizeFull();
+        
+        availableProcesses = new ProcessDefinitionList();
+        accordion.addTab(availableProcesses, "Available Processes");
+        
         return accordion;
     }
 
     @Override
     public void setNameOfCurrentUser(String firstName, String lastName) {
         currentUser.setValue(String.format("%s %s", firstName, lastName));
+    }
+
+    @Override
+    public void setClaimableTasks(List<Task> tasks) {
+        // TODO implement me
+    }
+
+    @Override
+    public void setAssignedTasks(List<Task> tasks) {
+        // TODO implement me
+    }
+
+    @Override
+    public void setAvailableProcesses(List<ProcessDefinition> processes) {
+        availableProcesses.setProcessDefinitions(processes);
+    }
+
+    @Override
+    public void showProcessView(View view) {
+        if (view instanceof VaadinView) {
+            splitPanel.setSecondComponent(((VaadinView) view).getViewComponent());
+        }
+    }
+
+    @Override
+    public void hideProcessView() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(true);
+        layout.addComponent(new Label("No task selected."));
+        splitPanel.setSecondComponent(layout);
     }
 }

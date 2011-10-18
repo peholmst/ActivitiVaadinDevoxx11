@@ -4,10 +4,10 @@ import com.github.peholmst.mvp4vaadin.ViewEvent;
 import com.github.peholmst.mvp4vaadin.ViewListener;
 import com.vaadin.ui.Window;
 import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardView;
-import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardViewComponent;
+import org.vaadin.activiti.simpletravel.ui.dashboard.components.DashboardViewComponent;
 import org.vaadin.activiti.simpletravel.ui.dashboard.UserLoggedOutEvent;
 import org.vaadin.activiti.simpletravel.ui.login.LoginView;
-import org.vaadin.activiti.simpletravel.ui.login.LoginViewComponent;
+import org.vaadin.activiti.simpletravel.ui.login.components.LoginViewComponent;
 import org.vaadin.activiti.simpletravel.ui.login.UserLoggedInEvent;
 
 public class MainWindow extends Window implements ViewListener {

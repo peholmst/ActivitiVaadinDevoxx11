@@ -11,5 +11,13 @@
 	<bean id="activitiRule" class="org.activiti.engine.test.ActivitiRule">
 		<property name="processEngine" ref="processEngine" />
 	</bean>
+	
+	<!-- Mail server testing -->
+	<bean id="wiserServer" class="org.subethamail.wiser.Wiser" init-method="start" destroy-method="stop">
+		<property name="port" value="9898" />
+	</bean>
+	
+	<!-- Test-services -->
+	<bean id="employeeService" class="org.vaadin.activiti.simpletravel.test.DummyEmployeeService" />
 
 </beans>

@@ -26,6 +26,9 @@
         <property name="transactionManager" ref="transactionManager" />
         <property name="databaseSchemaUpdate" value="true" />
         <property name="jobExecutorActivate" value="true" />
+        
+        <!-- Mail server configuration -->
+        <property name="mailServerPort" value="9898" />
     </bean>
   
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">

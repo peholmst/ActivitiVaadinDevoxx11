@@ -18,4 +18,14 @@ public interface DashboardView extends View {
     void showProcessView(View view);
     
     void hideProcessView();
+    
+    void showProcessStartedMessage(String processName);
+    
+    void showNewClaimableTasksMessage();
+    
+    void showNewTasksMessage();
+    
+    void startProcessEnginePolling();
+    
+    void stopProcessEnginePolling();    
 }

@@ -22,6 +22,7 @@ public class SimpleTravelApplication extends Application implements TransactionL
     public void close() {
         setUser(null);
         getContext().removeTransactionListener(this);
+        ((MainWindow) getMainWindow()).destroy();
         super.close();
     }
 

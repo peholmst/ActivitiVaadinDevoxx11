@@ -1,7 +1,5 @@
 package org.vaadin.activiti.simpletravel.ui.forms.impl;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -50,10 +48,10 @@ public class FormViewServiceImpl implements FormViewService {
         logger.info("Looking for start forms");
         Set<Class<?>> types = reflections.getTypesAnnotatedWith(StartForm.class);
         for (Class<?> type : types) {            
-            final String processDefinitionId = type.getAnnotation(StartForm.class).processDefinitionId();
+            final String processDefinitionKey = type.getAnnotation(StartForm.class).processDefinitionKey();
             if (StartFormView.class.isAssignableFrom(type)) {
-                logger.info("Found start form {} for process definition '{}'", type.getName(), processDefinitionId);
-                startForms.put(processDefinitionId, type);
+                logger.info("Found start form {} for process definition '{}'", type.getName(), processDefinitionKey);
+                startForms.put(processDefinitionKey, type);
             } else {
                 logger.warn("Ignoring start form {}: StartFormView interface not implemented", type.getName());
             }
@@ -62,7 +60,7 @@ public class FormViewServiceImpl implements FormViewService {
     
     private void lookupTaskForms() {
         logger.info("Looking for task forms");
-        // TODO Implement me!
+        // TODO Implement me!s
     }
     
     @Required
@@ -74,14 +72,14 @@ public class FormViewServiceImpl implements FormViewService {
     public boolean hasStartFormView(ProcessDefinition processDefinition) {
         return startForms.containsKey(processDefinition);
     }
-
+    
     @Override
     public StartFormView getStartFormView(ProcessDefinition processDefinition) {
         final Class<? extends StartFormView> formType = startForms.get(processDefinition);
         if (formType == null) {
             throw new IllegalArgumentException("No start form found");
         }
-        final StartFormView formView = create(formType);
+        final StartFormView formView = createStartFormView(formType);
         formView.setProcessDefinition(processDefinition);
         return formView;
     }
@@ -98,7 +96,7 @@ public class FormViewServiceImpl implements FormViewService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
  
-    private StartFormView create(Class<? extends StartFormView> type) {
+    private StartFormView createStartFormView(Class<? extends StartFormView> type) {
         try {
             return type.newInstance();
         } catch (Exception e) {

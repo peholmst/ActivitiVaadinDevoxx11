@@ -30,6 +30,11 @@ public class MainWindow extends Window implements ViewListener {
         }
     }
 
+    public void destroy() {
+        disposeLoginView();
+        disposeDashboardView();
+    }
+
     private void loginUser(String username) {
         getApplication().setUser(username);
         showDashboardView();
@@ -39,7 +44,7 @@ public class MainWindow extends Window implements ViewListener {
     private void logoutUser() {
         getApplication().close();
     }
-    
+
     private void showLoginView() {
         loginView = new LoginViewComponent();
         loginView.addListener(this);
@@ -47,14 +52,24 @@ public class MainWindow extends Window implements ViewListener {
     }
 
     private void disposeLoginView() {
-        loginView.removeListener(this);
-        loginView = null;
+        if (loginView != null) {
+            loginView.removeListener(this);
+            loginView = null;
+        }
     }
 
     private void showDashboardView() {
         dashboardView = new DashboardViewComponent();
         dashboardView.addListener(this);
         setContent((DashboardViewComponent) dashboardView);
+        dashboardView.startProcessEnginePolling();
     }
-    
+
+    private void disposeDashboardView() {
+        if (dashboardView != null) {
+            dashboardView.removeListener(this);
+            dashboardView.stopProcessEnginePolling();
+            dashboardView = null;
+        }
+    }
 }

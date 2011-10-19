@@ -11,6 +11,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Reindeer;
 import java.util.List;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -18,6 +19,7 @@ import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardPresenter;
 import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardView;
+import org.vaadin.artur.icepush.ICEPush;
 
 @Configurable
 public class DashboardViewComponent extends AbstractViewComponent<DashboardView, DashboardPresenter> implements DashboardView {
@@ -29,13 +31,24 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     private Accordion sidebar;
     private Label currentUser;
     private ProcessDefinitionList availableProcesses;
+    private TaskList claimableTasks;
+    private TaskList assignedTasks;
+    private ICEPush pusher;
 
     @Override
     protected Component createCompositionRoot() {
         viewLayout = new VerticalLayout();
         viewLayout.setSizeFull();
+        
+        pusher = new ICEPush();
+        viewLayout.addComponent(pusher);
+        
         setSizeFull();
+        return viewLayout;
+    }
 
+    @Override
+    public void initView() {
         header = createHeader();
         viewLayout.addComponent(header);
 
@@ -47,8 +60,6 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
 
         sidebar = createSidebar();
         splitPanel.setFirstComponent(sidebar);
-
-        return viewLayout;
     }
 
     private HorizontalLayout createHeader() {
@@ -87,12 +98,17 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     }
 
     private Accordion createSidebar() {
-        final Accordion accordion = new Accordion();                
+        final Accordion accordion = new Accordion();
         accordion.setSizeFull();
-        
-        availableProcesses = new ProcessDefinitionList();
-        accordion.addTab(availableProcesses, "Available Processes");
-        
+
+        availableProcesses = new ProcessDefinitionList(getPresenter());
+        claimableTasks = new TaskList();
+        assignedTasks = new TaskList();
+
+        accordion.addTab(availableProcesses, "Start New Process");
+        accordion.addTab(claimableTasks);
+        accordion.addTab(assignedTasks);
+
         return accordion;
     }
 
@@ -103,12 +119,16 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
 
     @Override
     public void setClaimableTasks(List<Task> tasks) {
+        sidebar.getTab(claimableTasks).setCaption(String.format("Unassigned Tasks (%d)", tasks.size()));
         // TODO implement me
+        pushChanges();
     }
 
     @Override
     public void setAssignedTasks(List<Task> tasks) {
+        sidebar.getTab(assignedTasks).setCaption(String.format("My Tasks (%d)", tasks.size()));
         // TODO implement me
+        pushChanges();
     }
 
     @Override
@@ -129,5 +149,36 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
         layout.setMargin(true);
         layout.addComponent(new Label("No task selected."));
         splitPanel.setSecondComponent(layout);
+    }
+
+    @Override
+    public void showProcessStartedMessage(String processName) {
+        getWindow().showNotification(processName + " started");
+    }
+
+    @Override
+    public void startProcessEnginePolling() {
+        getPresenter().startProcessEnginePolling();
+    }
+
+    @Override
+    public void stopProcessEnginePolling() {
+        getPresenter().stopProcessEnginePolling();
+    }
+    
+    private void pushChanges() {
+        if (getApplication() != null) {
+            pusher.push();
+        }
+    }
+
+    @Override
+    public void showNewClaimableTasksMessage() {
+        getWindow().showNotification("There are new unassigned tasks", Notification.TYPE_TRAY_NOTIFICATION);
+    }
+
+    @Override
+    public void showNewTasksMessage() {
+        getWindow().showNotification("You have new tasks", Notification.TYPE_TRAY_NOTIFICATION);
     }
 }

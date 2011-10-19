@@ -32,7 +32,7 @@ public class ProcessInitializer implements Groups {
     
     public void setUpUsers() {
         logger.info("Creating users for Activiti");
-        addUser("traveler", "Tom", "Traveler", "tom@foobar.net", GROUP_TRAVELERS);
+        addUser("traveler", "Tom", "Traveler", "tom@foobar.net", null);
         addUser("manager", "Mike", "Manager", "mike@foobar.net", GROUP_MANAGERS);
         addUser("secretary", "Steven", "Secretary", "steven@foobar.net", GROUP_SECRETARIES);
         addUser("payroll", "Patrick", "Payroll", "patrick@foobar.net", GROUP_PAYROLLADMINS);
@@ -46,12 +46,13 @@ public class ProcessInitializer implements Groups {
         user.setEmail(email);
         user.setPassword("p");
         identityService.saveUser(user);
-        identityService.createMembership(username, group);
+        if (group != null) {
+            identityService.createMembership(username, group);
+        }
     }
     
     private void setUpGroups() {
         logger.info("Creating user groups for Activiti");
-        addGroup(GROUP_TRAVELERS, "Travelers");
         addGroup(GROUP_SECRETARIES, "Secretaries");
         addGroup(GROUP_MANAGERS, "Managers");
         addGroup(GROUP_PAYROLLADMINS, "Payroll Administrators");

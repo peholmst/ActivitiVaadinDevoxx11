@@ -56,8 +56,18 @@
         </dependency>
         <dependency>
             <groupId>org.vaadin.addons</groupId>
-            <artifactId>refresher</artifactId>
-            <version>1.1.1</version>
+            <artifactId>icepush</artifactId>
+            <version>0.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.icepush</groupId>
+            <artifactId>icepush</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin</groupId>
+            <artifactId>icepush-gwt</artifactId>
+            <version>0.1.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -65,12 +75,12 @@
             <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <version>${gwt.version}</version>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>        -->
         
 	<!-- Database -->
         <dependency>
@@ -189,8 +199,8 @@
                         <contextPath>/simple-travel</contextPath>
                         <baseResource implementation="org.mortbay.resource.ResourceCollection">
                             <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
-                            <resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
-                            <!--<resourcesAsCSV>src/main/webapp</resourcesAsCSV>-->
+                            <!--<resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>-->
+                            <resourcesAsCSV>src/main/webapp</resourcesAsCSV>
                         </baseResource>
                     </webAppConfig>
                 </configuration>
@@ -246,10 +256,9 @@
                 <artifactId>gwt-maven-plugin</artifactId>
                 <version>${gwt.version}</version>
                 <configuration>
-                    <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+                    <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
                     <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
                     <runTarget>clean</runTarget>
-                    <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
                     <noServer>true</noServer>
                     <port>8080</port>
                     <soyc>false</soyc>
@@ -312,5 +321,13 @@
             <id>vaadin-addons</id>
             <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>	
+        <repository>
+            <id>icepush</id>
+            <url>http://anonsvn.icefaces.org/repo/maven2/releases/</url>
+        </repository>
+        <repository>
+            <id>icepush-gwt</id>
+            <url>http://openccdb.org:8081/nexus/content/repositories/thirdparty</url>
+        </repository>
     </repositories>
 </project>

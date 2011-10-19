@@ -39,6 +39,18 @@ public class NewTravelRequestFormViewComponent extends AbstractViewComponent<New
     private Button commit;
     
     private Button cancel;
+
+    @Override
+    public void setRequest(NewTravelRequest request) {
+        this.request = new BeanItem<NewTravelRequest>(request);
+        requestForm.setItemDataSource(this.request, Arrays.asList(NewTravelRequest.PROP_DEPARTURE_DATE, 
+                NewTravelRequest.PROP_RETURN_DATE, 
+                NewTravelRequest.PROP_DESTINATION_NAME, 
+                NewTravelRequest.PROP_DESTINATION_COUNTRY, 
+                NewTravelRequest.PROP_DESTINATION_CITY,
+                NewTravelRequest.PROP_DESTINATION_DESCRIPTION));
+        
+    }
     
     private class RequestFormFieldFactory extends DefaultFieldFactory {
 
@@ -72,9 +84,7 @@ public class NewTravelRequestFormViewComponent extends AbstractViewComponent<New
     }
     
     @Override
-    protected Component createCompositionRoot() {
-        request = new BeanItem<NewTravelRequest>(new NewTravelRequest());
-        
+    protected Component createCompositionRoot() {        
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -93,12 +103,6 @@ public class NewTravelRequestFormViewComponent extends AbstractViewComponent<New
         final Form form = new Form();        
         form.setWriteThrough(false);
         form.setFormFieldFactory(new RequestFormFieldFactory());
-        form.setItemDataSource(request, Arrays.asList(NewTravelRequest.PROP_DEPARTURE_DATE, 
-                NewTravelRequest.PROP_RETURN_DATE, 
-                NewTravelRequest.PROP_DESTINATION_NAME, 
-                NewTravelRequest.PROP_DESTINATION_COUNTRY, 
-                NewTravelRequest.PROP_DESTINATION_CITY,
-                NewTravelRequest.PROP_DESTINATION_DESCRIPTION));
         form.setImmediate(true);
         
         final HorizontalLayout buttons = new HorizontalLayout();

@@ -16,6 +16,10 @@
             <param-name>application</param-name>
             <param-value>org.vaadin.activiti.simpletravel.ui.SimpleTravelApplication</param-value>
         </init-param>
+        <init-param>
+            <param-name>widgetset</param-name>
+            <param-value>org.vaadin.activiti.simpletravel.ui.SimpleTravelWidgetset</param-value>
+        </init-param>
     </servlet>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

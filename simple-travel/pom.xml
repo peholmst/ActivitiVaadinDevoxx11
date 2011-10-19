@@ -15,6 +15,7 @@
         <aspectj.version>1.6.11</aspectj.version>
         <slf4j.version>1.6.2</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <gwt.version>2.4.0</gwt.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,23 @@
             <artifactId>mvp4vaadin</artifactId>
             <version>0.9.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>refresher</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwt.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwt.version}</version>
+            <scope>provided</scope>
+        </dependency>        
         
 	<!-- Database -->
         <dependency>
@@ -171,12 +189,13 @@
                         <contextPath>/simple-travel</contextPath>
                         <baseResource implementation="org.mortbay.resource.ResourceCollection">
                             <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
-                            <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
-                            <resourcesAsCSV>src/main/webapp</resourcesAsCSV>
+                            <resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
+                            <!--<resourcesAsCSV>src/main/webapp</resourcesAsCSV>-->
                         </baseResource>
                     </webAppConfig>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -187,8 +206,7 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-            
-            
+                        
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -197,8 +215,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            
-            
+                        
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
@@ -222,11 +239,34 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>        
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwt.version}</version>
+                <configuration>
+                    <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+                    <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+                    <runTarget>clean</runTarget>
+                    <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+                    <noServer>true</noServer>
+                    <port>8080</port>
+                    <soyc>false</soyc>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resources</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>            
         </plugins>
         <pluginManagement>
             <plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        	<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -237,13 +277,13 @@
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>
-        									org.codehaus.mojo
+                                            org.codehaus.mojo
                                         </groupId>
                                         <artifactId>
-        									aspectj-maven-plugin
+                                            aspectj-maven-plugin
                                         </artifactId>
                                         <versionRange>
-        									[1.4,)
+                                            [1.4,)
                                         </versionRange>
                                         <goals>
                                             <goal>test-compile</goal>

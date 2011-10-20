@@ -75,12 +75,6 @@
             <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>${gwt.version}</version>
-            <scope>provided</scope>
-        </dependency>        -->
         
 	<!-- Database -->
         <dependency>
@@ -93,6 +87,33 @@
             <artifactId>h2</artifactId>
             <version>1.2.132</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.2.0.Final</version>
+<!--            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>-->
+        </dependency>        
 
 	<!-- Spring -->
         <dependency>
@@ -137,16 +158,6 @@
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-        <!--
-            Spring aspects require this library on the classpath while
-            weaving.
-        -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.0.0</version>
-            <scope>provided</scope>
-        </dependency>
 
 	<!-- Testing -->
         <dependency>
@@ -179,7 +190,14 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.5</version>
-        </dependency>        
+        </dependency>    
+        
+        <!-- Commons -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>simple-travel</finalName>
@@ -328,6 +346,10 @@
         <repository>
             <id>icepush-gwt</id>
             <url>http://openccdb.org:8081/nexus/content/repositories/thirdparty</url>
+        </repository>
+        <repository>
+            <id>eclipselink</id>
+            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
         </repository>
     </repositories>
 </project>

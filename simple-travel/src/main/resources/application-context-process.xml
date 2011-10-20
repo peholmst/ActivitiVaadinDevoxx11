@@ -47,6 +47,7 @@
     <context:component-scan base-package="org.vaadin.activiti.simpletravel.demo"/>
     <context:component-scan base-package="org.vaadin.activiti.simpletravel.identity"/>        
     <context:component-scan base-package="org.vaadin.activiti.simpletravel.domain.repositories"/>        
+    <context:component-scan base-package="org.vaadin.activiti.simpletravel.service"/>        
     
     <bean id="eclipseLinkVendorAdapter" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
         <property name="databasePlatform" value="HSQL" />

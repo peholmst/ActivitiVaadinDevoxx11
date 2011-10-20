@@ -31,8 +31,8 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     private Accordion sidebar;
     private Label currentUser;
     private ProcessDefinitionList availableProcesses;
-    private TaskList claimableTasks;
-    private TaskList assignedTasks;
+    private ClaimableTaskList claimableTasks;
+    private AssignedTaskList assignedTasks;
     private ICEPush pusher;
 
     @Override
@@ -102,8 +102,8 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
         accordion.setSizeFull();
 
         availableProcesses = new ProcessDefinitionList(getPresenter());
-        claimableTasks = new TaskList();
-        assignedTasks = new TaskList();
+        claimableTasks = new ClaimableTaskList(getPresenter());
+        assignedTasks = new AssignedTaskList(getPresenter());
 
         accordion.addTab(availableProcesses, "Start New Process");
         accordion.addTab(claimableTasks);
@@ -120,15 +120,13 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     @Override
     public void setClaimableTasks(List<Task> tasks) {
         sidebar.getTab(claimableTasks).setCaption(String.format("Unassigned Tasks (%d)", tasks.size()));
-        // TODO implement me
-        pushChanges();
+        claimableTasks.setTasks(tasks);
     }
 
     @Override
     public void setAssignedTasks(List<Task> tasks) {
         sidebar.getTab(assignedTasks).setCaption(String.format("My Tasks (%d)", tasks.size()));
-        // TODO implement me
-        pushChanges();
+        assignedTasks.setTasks(tasks);
     }
 
     @Override
@@ -157,6 +155,11 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     }
 
     @Override
+    public void showTaskCompletedMessage(String taskName) {
+        getWindow().showNotification(taskName + " completed");
+    }    
+    
+    @Override
     public void startProcessEnginePolling() {
         getPresenter().startProcessEnginePolling();
     }
@@ -166,7 +169,8 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
         getPresenter().stopProcessEnginePolling();
     }
     
-    private void pushChanges() {
+    @Override
+    public void pushChangesToClient() {
         if (getApplication() != null) {
             pusher.push();
         }

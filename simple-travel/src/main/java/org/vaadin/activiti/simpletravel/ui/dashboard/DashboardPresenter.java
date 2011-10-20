@@ -112,6 +112,26 @@ public class DashboardPresenter extends Presenter<DashboardView> {
         }
     }        
 
+    public void assignTaskToCurrentUser(String taskId) {
+        taskService.claim(taskId, currentUsername);
+    }
+    
+    public void assignTaskToCurrentUserAndComplete(String taskId) {
+        assignTaskToCurrentUser(taskId);
+        completeTask(taskId);
+    }
+    
+    public void completeTask(String taskId) {
+        final Task task = getTaskById(taskId);
+        if (formViewService.hasTaskFormView(task)) {
+            View formView = formViewService.getTaskFormView(task);
+            showFormView(formView);
+        } else {
+            taskService.complete(taskId);
+            getView().showTaskCompletedMessage(task.getName());
+        }
+    }
+    
     protected View getCurrentFormView() {
         return currentFormView;
     }            
@@ -144,6 +164,8 @@ public class DashboardPresenter extends Presenter<DashboardView> {
         }
         currentNumberOfClaimableTasks = claimableTasks.size();
         getView().setClaimableTasks(claimableTasks);
+        
+        getView().pushChangesToClient();
     }
     
     protected List<Task> getClaimableTasks() {
@@ -170,5 +192,9 @@ public class DashboardPresenter extends Presenter<DashboardView> {
     
     protected ProcessDefinition getProcessDefinitionByKey(String key) {
         return repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).latestVersion().singleResult();
+    }
+    
+    protected Task getTaskById(String id) {
+        return taskService.createTaskQuery().taskId(id).singleResult();
     }
 }

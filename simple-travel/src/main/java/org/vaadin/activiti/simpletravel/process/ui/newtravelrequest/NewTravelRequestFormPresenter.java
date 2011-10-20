@@ -3,7 +3,7 @@ package org.vaadin.activiti.simpletravel.process.ui.newtravelrequest;
 import com.github.peholmst.mvp4vaadin.Presenter;
 import java.util.Date;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.activiti.simpletravel.ui.forms.FormClosedEvent;
@@ -15,8 +15,8 @@ public class NewTravelRequestFormPresenter extends Presenter<NewTravelRequestFor
     protected transient RuntimeService runtimeService;
     private String processDefinitionKey;
 
-    public void setProcessDefinition(ProcessDefinition pd) {
-        processDefinitionKey = pd.getKey();
+    public void setStartFormData(StartFormData startFormData) {
+        processDefinitionKey = startFormData.getProcessDefinition().getKey();
     }
 
     @Override

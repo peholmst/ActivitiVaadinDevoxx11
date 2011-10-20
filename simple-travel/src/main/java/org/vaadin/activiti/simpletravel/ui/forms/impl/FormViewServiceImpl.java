@@ -1,7 +1,9 @@
 package org.vaadin.activiti.simpletravel.ui.forms.impl;
 
+import com.github.peholmst.mvp4vaadin.View;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import org.activiti.engine.FormService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.reflections.Reflections;
@@ -11,10 +13,12 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.vaadin.activiti.simpletravel.ui.forms.FormViewService;
 import org.vaadin.activiti.simpletravel.ui.forms.StartForm;
 import org.vaadin.activiti.simpletravel.ui.forms.StartFormView;
+import org.vaadin.activiti.simpletravel.ui.forms.TaskForm;
 import org.vaadin.activiti.simpletravel.ui.forms.TaskFormView;
 
 public class FormViewServiceImpl implements FormViewService {
@@ -26,6 +30,11 @@ public class FormViewServiceImpl implements FormViewService {
     private final Logger logger = LoggerFactory.getLogger(getClass());    
     
     private StartFormMap startForms = new StartFormMap();
+    
+    private TaskFormMap taskForms = new TaskFormMap();
+    
+    @Autowired
+    protected FormService formService;
     
     @PostConstruct
     public void setUp() {
@@ -60,7 +69,16 @@ public class FormViewServiceImpl implements FormViewService {
     
     private void lookupTaskForms() {
         logger.info("Looking for task forms");
-        // TODO Implement me!s
+        Set<Class<?>> types = reflections.getTypesAnnotatedWith(TaskForm.class);
+        for (Class<?> type : types) {            
+            final TaskForm taskFormInfo = type.getAnnotation(TaskForm.class);
+            if (TaskFormView.class.isAssignableFrom(type)) {
+                logger.info("Found task form {} for form key '{}'", type.getName(), taskFormInfo.formKey());
+                taskForms.put(taskFormInfo, type);
+            } else {
+                logger.warn("Ignoring task form {}: TaskFormView interface not implemented", type.getName());
+            }
+        }       
     }
     
     @Required
@@ -79,24 +97,28 @@ public class FormViewServiceImpl implements FormViewService {
         if (formType == null) {
             throw new IllegalArgumentException("No start form found");
         }
-        final StartFormView formView = createStartFormView(formType);
-        formView.setProcessDefinition(processDefinition);
+        final StartFormView formView = createFormView(formType);
+        formView.setStartFormData(formService.getStartFormData(processDefinition.getId()));
         return formView;
     }
 
     @Override
     public boolean hasTaskFormView(Task task) {
-        // TODO implement me
-        throw new UnsupportedOperationException("Not supported yet.");
+        return taskForms.containsKey(task);
     }
 
     @Override
     public TaskFormView getTaskFormView(Task task) {
-        // TODO implement me
-        throw new UnsupportedOperationException("Not supported yet.");
+        final Class<? extends TaskFormView> formType = taskForms.get(task);
+        if (formType == null) {
+            throw new IllegalArgumentException("No task form found");
+        }
+        final TaskFormView formView = createFormView(formType);
+        formView.setTaskFormData(formService.getTaskFormData(task.getId()));
+        return formView;
     }
  
-    private StartFormView createStartFormView(Class<? extends StartFormView> type) {
+    private <T extends View> T createFormView(Class<? extends T> type) {
         try {
             return type.newInstance();
         } catch (Exception e) {

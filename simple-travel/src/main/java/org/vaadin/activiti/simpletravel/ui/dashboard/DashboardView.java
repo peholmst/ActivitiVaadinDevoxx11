@@ -21,6 +21,8 @@ public interface DashboardView extends View {
     
     void showProcessStartedMessage(String processName);
     
+    void showTaskCompletedMessage(String taskName);
+    
     void showNewClaimableTasksMessage();
     
     void showNewTasksMessage();
@@ -28,4 +30,7 @@ public interface DashboardView extends View {
     void startProcessEnginePolling();
     
     void stopProcessEnginePolling();    
+    
+    void pushChangesToClient();
+    
 }

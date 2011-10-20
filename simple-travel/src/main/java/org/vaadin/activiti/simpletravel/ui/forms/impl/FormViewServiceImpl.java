@@ -3,7 +3,9 @@ package org.vaadin.activiti.simpletravel.ui.forms.impl;
 import com.github.peholmst.mvp4vaadin.View;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.swing.text.html.FormView;
 import org.activiti.engine.FormService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.reflections.Reflections;
@@ -35,6 +37,9 @@ public class FormViewServiceImpl implements FormViewService {
     
     @Autowired
     protected FormService formService;
+    
+    @Autowired
+    protected RuntimeService runtimeService;
     
     @PostConstruct
     public void setUp() {
@@ -115,6 +120,7 @@ public class FormViewServiceImpl implements FormViewService {
         }
         final TaskFormView formView = createFormView(formType);
         formView.setTaskFormData(formService.getTaskFormData(task.getId()));
+        formView.setProcessVariables(runtimeService.getVariables(task.getProcessInstanceId()));
         return formView;
     }
  

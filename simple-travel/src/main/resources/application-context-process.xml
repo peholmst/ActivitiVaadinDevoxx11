@@ -15,8 +15,8 @@
         <property name="defaultAutoCommit" value="false" />
     </bean>
   
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource" />
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
   
     <tx:annotation-driven mode="aspectj"/>

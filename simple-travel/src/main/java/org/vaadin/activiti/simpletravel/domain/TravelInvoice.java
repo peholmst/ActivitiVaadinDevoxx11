@@ -13,6 +13,8 @@ import javax.validation.Valid;
 @Entity
 public class TravelInvoice extends AbstractEntity {
 
+    // TODO Add custom validation: invoice cannot be paid unless it has been approved
+    
     @OneToOne(optional = false)
     protected TravelRequest request;
     @ElementCollection

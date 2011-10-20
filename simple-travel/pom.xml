@@ -75,6 +75,11 @@
             <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.vaadin.addon</groupId>
+            <artifactId>beanvalidation-addon</artifactId>
+            <version>0.6.2</version>
+        </dependency>        
         
 	<!-- Database -->
         <dependency>
@@ -103,16 +108,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>4.2.0.Final</version>
-<!--            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>-->
         </dependency>        
 
 	<!-- Spring -->

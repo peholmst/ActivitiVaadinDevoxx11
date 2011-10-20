@@ -1,41 +1,34 @@
 package org.vaadin.activiti.simpletravel.process.ui.newtravelrequest;
 
-import com.github.peholmst.mvp4vaadin.Presenter;
 import java.util.Date;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.vaadin.activiti.simpletravel.ui.forms.FormClosedEvent;
+import org.vaadin.activiti.simpletravel.domain.TravelRequest;
+import org.vaadin.activiti.simpletravel.service.TravelRequestService;
+import org.vaadin.activiti.simpletravel.service.ValidationException;
+import org.vaadin.activiti.simpletravel.ui.forms.StartFormPresenter;
 
 @Configurable
-public class NewTravelRequestFormPresenter extends Presenter<NewTravelRequestFormView> {
+public class NewTravelRequestFormPresenter extends StartFormPresenter<NewTravelRequestFormView> {
 
     @Autowired
-    protected transient RuntimeService runtimeService;
-    private String processDefinitionKey;
-
-    public void setStartFormData(StartFormData startFormData) {
-        processDefinitionKey = startFormData.getProcessDefinition().getKey();
-    }
+    protected transient TravelRequestService travelRequestService;
 
     @Override
     public void init() {
-        NewTravelRequest request = new NewTravelRequest();
+        TravelRequest request = new TravelRequest();
         request.setDepartureDate(new Date());
+        request.setReturnDate(new Date());
         getView().setRequest(request);
     }
 
-    public void startProcess(NewTravelRequest request) {
-        runtimeService.startProcessInstanceByKey(processDefinitionKey, request.getValuesAsMap());
-        closeForm();
+    public void submitTravelRequest(TravelRequest request) {
+        try {
+            travelRequestService.submitNewTravelRequest(request);
+            closeForm();
+        } catch (ValidationException validationError) {
+            getView().setValidationError(validationError);
+        }
     }
 
-    public void cancel() {
-        closeForm();
-    }
-
-    private void closeForm() {
-        fireViewEvent(new FormClosedEvent(getView()));
-    }
 }

@@ -15,6 +15,13 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class TravelRequest extends AbstractEntity {
 
+    public static final String PROP_DEPARTURE_DATE = "departureDate";
+    public static final String PROP_RETURN_DATE = "returnDate";
+    public static final String PROP_COUNTRY = "country";
+    public static final String PROP_DESCRIPTION = "description";
+    
+    // TODO Add custom validation: returnDate cannot be before departureDate
+    
     @Column(nullable = false)
     protected String requesterUserId;
     @Temporal(TemporalType.DATE)

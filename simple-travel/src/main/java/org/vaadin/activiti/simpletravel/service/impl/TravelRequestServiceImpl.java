@@ -1,11 +1,16 @@
 package org.vaadin.activiti.simpletravel.service.impl;
 
+import java.util.Date;
+import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +30,8 @@ public class TravelRequestServiceImpl implements TravelRequestService {
     protected TravelRequestRepository repository;
     @Autowired
     protected RuntimeService runtimeService;
+    @Autowired
+    protected TaskService taskService;
 
     @PostConstruct
     public void init() {
@@ -42,7 +49,8 @@ public class TravelRequestServiceImpl implements TravelRequestService {
         ValidationUtil.validateAndThrow(getValidator(), request);
         request.setRequesterUserId(Authentication.getAuthenticatedUserId());
         request = repository.save(request);
-        // TODO invoke activiti
+        String businessKey = request.getId().toString();
+        runtimeService.startProcessInstanceByKey("simple-travel", businessKey); 
         return request;
     }
 
@@ -57,7 +65,8 @@ public class TravelRequestServiceImpl implements TravelRequestService {
     @Transactional
     @RequireGroup(Groups.GROUP_MANAGERS)
     public void approveTravelRequest(TravelRequest request, String motivation) {
-        final TravelRequestDecision decision = new TravelRequestDecision(Decision.APPROVED, motivation, Authentication.getAuthenticatedUserId());
+        final TravelRequestDecision decision = new TravelRequestDecision(Decision.APPROVED, 
+                motivation, Authentication.getAuthenticatedUserId(), new Date());
         setDecisionAndSave(request, decision);
     }
 
@@ -65,7 +74,8 @@ public class TravelRequestServiceImpl implements TravelRequestService {
     @Transactional
     @RequireGroup(Groups.GROUP_MANAGERS)
     public void denyTravelRequest(TravelRequest request, String motivation) {
-        final TravelRequestDecision decision = new TravelRequestDecision(Decision.DENIED, motivation, Authentication.getAuthenticatedUserId());
+        final TravelRequestDecision decision = new TravelRequestDecision(Decision.DENIED, 
+                motivation, Authentication.getAuthenticatedUserId(), new Date());
         setDecisionAndSave(request, decision);
     }
 
@@ -73,6 +83,24 @@ public class TravelRequestServiceImpl implements TravelRequestService {
         request.setDecision(decision);
         ValidationUtil.validateAndThrow(getValidator(), request);
         repository.save(request);
-        // TODO invoke activiti
+        final ProcessInstance processInstance = getProcessInstanceForRequest(request);
+        final Task travelApprovalTask = getTravelApprovalTask(processInstance);
+        final HashMap<String, Object> processVariables = new HashMap<String, Object>();
+        processVariables.put("approveTravel", decision.getDecision() == Decision.APPROVED);
+        processVariables.put("approvalMotivation", decision.getMotivationOfDecision());
+        taskService.complete(travelApprovalTask.getId(), processVariables);
+    }
+    
+    private ProcessInstance getProcessInstanceForRequest(TravelRequest request) {
+        return runtimeService.createProcessInstanceQuery().
+                processInstanceBusinessKey(request.getId().toString(), "simple-travel").
+                singleResult();
+    }
+    
+    private Task getTravelApprovalTask(ProcessInstance processInstance) {
+        return taskService.createTaskQuery().
+                processInstanceId(processInstance.getId()).
+                taskDefinitionKey("usertask1").
+                singleResult();
     }
 }

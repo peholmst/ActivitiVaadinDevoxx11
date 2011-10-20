@@ -35,6 +35,7 @@ public class AbstractJpaRepository<E extends AbstractEntity> implements Reposito
         } else {
             entity = entityManager.merge(entity);
         }
+        entityManager.flush();
         return entity;
     }
 

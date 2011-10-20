@@ -49,10 +49,12 @@ public class ProcessInitializer implements Groups {
         if (group != null) {
             identityService.createMembership(username, group);
         }
+        identityService.createMembership(username, GROUP_EMPLOYEES);
     }
     
     private void setUpGroups() {
         logger.info("Creating user groups for Activiti");
+        addGroup(GROUP_EMPLOYEES, "Employees");
         addGroup(GROUP_SECRETARIES, "Secretaries");
         addGroup(GROUP_MANAGERS, "Managers");
         addGroup(GROUP_PAYROLLADMINS, "Payroll Administrators");

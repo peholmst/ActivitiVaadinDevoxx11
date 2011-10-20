@@ -19,27 +19,24 @@ public class TravelRequestDecision extends AbstractEntity {
     @Column(nullable = false)
     protected String managerUserId;
 
-    public Decision getDecision() {
-        return decision;
+    protected TravelRequestDecision() {
     }
 
-    public void setDecision(Decision decision) {
+    public TravelRequestDecision(Decision decision, String motivationOfDecision, String managerUserId) {
         this.decision = decision;
+        this.motivationOfDecision = motivationOfDecision;
+        this.managerUserId = managerUserId;
+    }
+
+    public Decision getDecision() {
+        return decision;
     }
 
     public String getManagerUserId() {
         return managerUserId;
     }
 
-    public void setManagerUserId(String managerUserId) {
-        this.managerUserId = managerUserId;
-    }
-
     public String getMotivationOfDecision() {
         return motivationOfDecision;
-    }
-
-    public void setMotivationOfDecision(String motivationOfDecision) {
-        this.motivationOfDecision = motivationOfDecision;
     }
 }

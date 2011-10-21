@@ -8,6 +8,8 @@
         <class>org.vaadin.activiti.simpletravel.domain.TravelRequest</class>
         <class>org.vaadin.activiti.simpletravel.domain.TravelRequestDecision</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <!-- We handle validation manually in the service layer -->
+        <validation-mode>NONE</validation-mode>
         <properties>
             <property name="eclipselink.weaving" value="false"/>
             <property name="eclipselink.ddl-generation" value="create-tables"/>

@@ -5,6 +5,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.UserError;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -18,10 +19,10 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Reindeer;
 import java.util.Arrays;
 import java.util.Locale;
+import javax.validation.ConstraintViolation;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.activiti.simpletravel.domain.Country;
 import org.vaadin.activiti.simpletravel.domain.TravelRequest;
@@ -53,8 +54,12 @@ public class NewTravelRequestFormViewComponent extends StartFormViewComponent<Ne
 
     @Override
     public void setValidationError(ValidationException error) {
-        // TODO Implement me!
-        getWindow().showNotification("A validation error has occured in the backend.", "TODO: update the UI to emphasize the invalid fields.", Notification.TYPE_WARNING_MESSAGE);
+        StringBuilder sb = new StringBuilder();
+        for (ConstraintViolation<Object> violation : error.getViolations()) {
+            sb.append(violation.getMessage());
+            sb.append('\n');
+        }
+        requestForm.setComponentError(new UserError(sb.toString(), UserError.CONTENT_TEXT, UserError.ERROR));
         commit.setEnabled(true); // was disabled when clicked
     }
 

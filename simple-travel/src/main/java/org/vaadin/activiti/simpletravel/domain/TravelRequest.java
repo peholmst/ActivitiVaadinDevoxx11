@@ -11,17 +11,16 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import org.vaadin.activiti.simpletravel.domain.validation.ReturnsAfterDeparture;
 
 @Entity
+@ReturnsAfterDeparture(message = "The return date cannot be before the departure date")
 public class TravelRequest extends AbstractEntity {
 
     public static final String PROP_DEPARTURE_DATE = "departureDate";
     public static final String PROP_RETURN_DATE = "returnDate";
     public static final String PROP_COUNTRY = "country";
     public static final String PROP_DESCRIPTION = "description";
-    
-    // TODO Add custom validation: returnDate cannot be before departureDate
-    
     @Column(nullable = false)
     protected String requesterUserId;
     @Temporal(TemporalType.DATE)

@@ -152,14 +152,14 @@ public class DashboardPresenter extends Presenter<DashboardView> {
     
     protected void updateTaskListsInView() {
         final List<Task> assignedTasks = getAssignedTasks();
-        if (currentNumberOfAssignedTasks != assignedTasks.size()) {
+        if (currentNumberOfAssignedTasks < assignedTasks.size()) {
             getView().showNewTasksMessage();
         }
         currentNumberOfAssignedTasks = assignedTasks.size();
         getView().setAssignedTasks(assignedTasks);
         
         final List<Task> claimableTasks = getClaimableTasks();
-        if (currentNumberOfClaimableTasks != claimableTasks.size()) {
+        if (currentNumberOfClaimableTasks < claimableTasks.size()) {
             getView().showNewClaimableTasksMessage();
         }
         currentNumberOfClaimableTasks = claimableTasks.size();

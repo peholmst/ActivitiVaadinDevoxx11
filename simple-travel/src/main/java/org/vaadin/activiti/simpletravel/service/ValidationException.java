@@ -17,4 +17,15 @@ public class ValidationException extends RuntimeException {
     public Set<ConstraintViolation<Object>> getViolations() {
         return Collections.unmodifiableSet(violations);
     }
+
+    @Override
+    public String getMessage() {
+        StringBuilder sb = new StringBuilder();
+        for (ConstraintViolation<Object> violation : violations) {
+            sb.append(violation.getMessage());
+            sb.append('\n');
+        }
+        return sb.toString();
+    }    
+    
 }

@@ -7,7 +7,5 @@ import org.vaadin.activiti.simpletravel.ui.forms.StartFormView;
 public interface NewTravelRequestFormView extends StartFormView {
  
     void setRequest(TravelRequest request);
-    
-    void setValidationError(ValidationException error);    
-    
+        
 }

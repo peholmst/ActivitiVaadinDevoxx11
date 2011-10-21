@@ -6,8 +6,10 @@ import javax.annotation.PostConstruct;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -32,6 +34,8 @@ public class TravelRequestServiceImpl implements TravelRequestService {
     protected RuntimeService runtimeService;
     @Autowired
     protected TaskService taskService;
+    @Autowired
+    protected IdentityService identityService;
 
     @PostConstruct
     public void init() {
@@ -58,7 +62,20 @@ public class TravelRequestServiceImpl implements TravelRequestService {
     @Transactional
     @RequireGroup(Groups.GROUP_EMPLOYEES)
     public TravelRequest findTravelRequestById(long id) {
-        return repository.findById(id);
+        TravelRequest request = repository.findById(id);
+        if (request != null) {
+            request.setRequesterUserName(getFullNameOfUser(request.getRequesterUserId()));
+        }
+        return request;
+    }
+    
+    private String getFullNameOfUser(String userId) {
+        User user = identityService.createUserQuery().userId(userId).singleResult();
+        if (user == null) {
+            return null;
+        } else {
+            return String.format("%s %s", user.getFirstName(), user.getLastName());
+        }
     }
 
     @Override
@@ -81,13 +98,12 @@ public class TravelRequestServiceImpl implements TravelRequestService {
 
     private void setDecisionAndSave(TravelRequest request, TravelRequestDecision decision) {
         request.setDecision(decision);
-        ValidationUtil.validateAndThrow(getValidator(), request);
+        ValidationUtil.validateAndThrow(getValidator(), decision);
         repository.save(request);
         final ProcessInstance processInstance = getProcessInstanceForRequest(request);
         final Task travelApprovalTask = getTravelApprovalTask(processInstance);
         final HashMap<String, Object> processVariables = new HashMap<String, Object>();
-        processVariables.put("approveTravel", decision.getDecision() == Decision.APPROVED);
-        processVariables.put("approvalMotivation", decision.getMotivationOfDecision());
+        processVariables.put("travelApproved", decision.getDecision() == Decision.APPROVED);
         taskService.complete(travelApprovalTask.getId(), processVariables);
     }
     
@@ -102,5 +118,16 @@ public class TravelRequestServiceImpl implements TravelRequestService {
                 processInstanceId(processInstance.getId()).
                 taskDefinitionKey("usertask1").
                 singleResult();
+    }
+
+    @Override
+    @Transactional
+    @RequireGroup(Groups.GROUP_EMPLOYEES)
+    public TravelRequest findTravelRequestByProcessInstanceId(String processInstanceId) {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        if (processInstance == null || processInstance.getBusinessKey() == null) {
+            return null;
+        }
+        return findTravelRequestById(Long.parseLong(processInstance.getBusinessKey()));
     }
 }

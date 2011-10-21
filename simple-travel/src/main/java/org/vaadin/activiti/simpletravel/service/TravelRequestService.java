@@ -8,8 +8,10 @@ public interface TravelRequestService {
     
     TravelRequest findTravelRequestById(long id);
     
+    TravelRequest findTravelRequestByProcessInstanceId(String processInstanceId);    
+    
     void approveTravelRequest(TravelRequest request, String motivation);
     
     void denyTravelRequest(TravelRequest request, String motivation);
-    
+        
 }

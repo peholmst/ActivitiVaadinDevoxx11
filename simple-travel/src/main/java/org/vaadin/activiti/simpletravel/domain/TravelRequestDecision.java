@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class TravelRequestDecision extends AbstractEntity {
@@ -18,6 +19,7 @@ public class TravelRequestDecision extends AbstractEntity {
     protected Decision decision;
     @Column(nullable = false)
     @NotNull(message = "Please enter a motivation for your decision")
+    @Size(min = 3, message = "Please enter a motivation for your decision")
     protected String motivationOfDecision;
     @Column(nullable = false)
     protected String managerUserId;

@@ -10,7 +10,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.vaadin.activiti.simpletravel.domain.validation.ReturnsAfterDeparture;
 
 @Entity
@@ -23,6 +27,8 @@ public class TravelRequest extends AbstractEntity {
     public static final String PROP_DESCRIPTION = "description";
     @Column(nullable = false)
     protected String requesterUserId;
+    @Transient
+    protected String requesterUserName;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull(message = "Please provide a departure date")
@@ -37,9 +43,11 @@ public class TravelRequest extends AbstractEntity {
     protected Country country;
     @Column(nullable = false)
     @NotNull(message = "Please enter a description of your trip")
+    @Size(min = 3, message = "Please enter a description of your trip")
     protected String description;
     @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     @CloneThis
+    @Valid
     protected TravelRequestDecision decision;
 
     public Country getCountry() {
@@ -72,6 +80,14 @@ public class TravelRequest extends AbstractEntity {
 
     public void setRequesterUserId(String requesterUserId) {
         this.requesterUserId = requesterUserId;
+    }
+
+    public String getRequesterFullName() {
+        return requesterUserName;
+    }
+
+    public void setRequesterUserName(String requesterUserName) {
+        this.requesterUserName = requesterUserName;
     }
 
     public Date getReturnDate() {

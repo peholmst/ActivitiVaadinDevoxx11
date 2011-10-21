@@ -178,11 +178,15 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
 
     @Override
     public void showNewClaimableTasksMessage() {
-        getWindow().showNotification("There are new unassigned tasks", Notification.TYPE_TRAY_NOTIFICATION);
+        if (getWindow() != null) {
+            getWindow().showNotification("There are new unassigned tasks", Notification.TYPE_TRAY_NOTIFICATION);
+        }
     }
 
     @Override
     public void showNewTasksMessage() {
-        getWindow().showNotification("You have new tasks", Notification.TYPE_TRAY_NOTIFICATION);
+        if (getWindow() != null) {
+            getWindow().showNotification("You have new tasks", Notification.TYPE_TRAY_NOTIFICATION);
+        }
     }
 }

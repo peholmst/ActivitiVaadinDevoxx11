@@ -79,7 +79,8 @@
             <groupId>com.vaadin.addon</groupId>
             <artifactId>beanvalidation-addon</artifactId>
             <version>0.6.2</version>
-        </dependency>        
+        </dependency>  
+              
         
 	<!-- Database -->
         <dependency>
@@ -108,7 +109,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>4.2.0.Final</version>
-        </dependency>        
+        </dependency>    
+        <dependency>
+   			<groupId>javax.validation</groupId>
+   			<artifactId>validation-api</artifactId>
+   			<version>1.0.0.GA</version>
+   		</dependency>    
 
 	<!-- Spring -->
         <dependency>
@@ -309,6 +315,26 @@
                                         </versionRange>
                                         <goals>
                                             <goal>test-compile</goal>
+                                            <goal>compile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.codehaus.mojo
+                                        </groupId>
+                                        <artifactId>
+                                            gwt-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [2.4.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>resources</goal>
                                             <goal>compile</goal>
                                         </goals>
                                     </pluginExecutionFilter>

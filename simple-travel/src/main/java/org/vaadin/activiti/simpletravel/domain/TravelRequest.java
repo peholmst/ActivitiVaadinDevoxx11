@@ -1,7 +1,7 @@
 package org.vaadin.activiti.simpletravel.domain;
 
-import com.github.peholmst.stuff4vaadin.clone.CloneThis;
 import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,10 +12,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import org.vaadin.activiti.simpletravel.domain.validation.ReturnsAfterDeparture;
+
+import com.github.peholmst.stuff4vaadin.clone.CloneThis;
 
 @Entity
 @ReturnsAfterDeparture(message = "The return date cannot be before the departure date")

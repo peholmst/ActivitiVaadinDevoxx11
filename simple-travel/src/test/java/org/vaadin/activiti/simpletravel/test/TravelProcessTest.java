@@ -1,16 +1,11 @@
 package org.vaadin.activiti.simpletravel.test;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Calendar;
 import java.util.logging.Logger;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -23,8 +18,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
+import org.vaadin.activiti.simpletravel.domain.Country;
+import org.vaadin.activiti.simpletravel.domain.TravelRequest;
+import org.vaadin.activiti.simpletravel.service.TravelRequestService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:application-context-process.xml",
@@ -37,48 +36,42 @@ public class TravelProcessTest {
 	private RuntimeService runtimeService;
 
 	@Autowired
-	private FormService formService;
-
-	@Autowired
 	private TaskService taskService;
 
 	@Autowired
 	private RepositoryService repositoryService;
+	
+	@Autowired
+	private TravelRequestService travelRequestService;
 
 	@Autowired
 	@Rule
-	public ActivitiRule activitiSpringRule;
+	public
+	ActivitiRule activitiSpringRule;
 	
 	@Autowired
-	public Wiser wiserServer;
-
+	private Wiser wiserServer;
+	
 	@Test
 	@Deployment(resources = "process/simple-travel.bpmn20.xml")
+	@Transactional
 	public void testTravelProcessRejectRequest() throws Exception {
-		// Get hold of the ID of our latest process
-		String processDefinitionId = repositoryService
-				.createProcessDefinitionQuery()
-				.processDefinitionKey("simple-travel").latestVersion()
-				.singleResult().getId();
-
-		// Create start-properties
-		Map<String, Object> properties = getStartProperties();
-		StartFormData startFormData = formService
-				.getStartFormData(processDefinitionId);
-
-		// Check if the form-properties match the one's we're about to use
-		Assert.assertEquals(properties.size(), startFormData
-				.getFormProperties().size());
-		for (FormProperty prop : startFormData.getFormProperties()) {
-			Assert.assertTrue(properties.containsKey(prop.getId()));
-		}
-
 		// Start the actual process as a traveler
 		Authentication.setAuthenticatedUserId("traveller");
-		ProcessInstance processInstance = runtimeService
-				.startProcessInstanceByKey("simple-travel", properties);
+		TravelRequest newRequest = fillTravelRequest();
+		
+		newRequest = travelRequestService.submitNewTravelRequest(newRequest);
+		
+		// Check if the process is started
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+				.processInstanceBusinessKey(newRequest.getId().toString())
+				.singleResult();
 		Assert.assertNotNull(processInstance);
-
+		
+		// Check if the travel request JPA-entity is available
+		TravelRequest travelRequestFromVariable = (TravelRequest) runtimeService.getVariable(processInstance.getId(), "request");
+		Assert.assertNotNull(travelRequestFromVariable);
+		
 		// Check if a task is available, queued for a manager
 		Task theTask = taskService.createTaskQuery()
 				.taskCandidateGroup("management").singleResult();
@@ -86,14 +79,14 @@ public class TravelProcessTest {
 		Assert.assertEquals(processInstance.getId(),
 				theTask.getProcessInstanceId());
 
-		// Claim and finish the task as manager
+		// Claim the task as manager
 		Authentication.setAuthenticatedUserId("manager");
 		taskService.claim(theTask.getId(), "manager");
 		
-		// Reject the request
-		Map<String, Object> rejectProperties = getRejectProperties();
-		taskService.complete(theTask.getId(), rejectProperties);
+		// Reject the task
+		travelRequestService.denyTravelRequest(newRequest, "No more money left");
 		
+		// Mail should have been sent, with the rejection details
 		Assert.assertEquals(1, wiserServer.getMessages().size());
 		WiserMessage rejectionMail = wiserServer.getMessages().get(0);
 		wiserServer.getMessages().clear();
@@ -103,31 +96,77 @@ public class TravelProcessTest {
 		Assert.assertEquals("no-reply@vaadin-activiti.org", rejectionMail.getEnvelopeSender());
 		String data = new String(rejectionMail.getData(), "UTF-8");
 		
-		LOGGER.info("Recieved mail: \n" + data);
+		LOGGER.info(data);
 		
 		// Check mail body for receiver, rejecting manager and motivation
 		Assert.assertTrue(data.contains("Dear traveller"));
-		Assert.assertTrue(data.contains("Test Rejection"));
+		Assert.assertTrue(data.contains("No more money left"));
 		Assert.assertTrue(data.contains("by manager"));
 	}
+	
+	@Test
+	@Deployment(resources = "process/simple-travel.bpmn20.xml")
+	@Transactional
+	public void testTravelProcessApproveRequest() throws Exception {
+		// Start the actual process as a traveler
+		Authentication.setAuthenticatedUserId("traveller");
+		TravelRequest newRequest = fillTravelRequest();
 
-	protected Map<String, Object> getStartProperties() {
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("destinationCountry", "Belgium");
-		properties.put("destinationCity", "Antwerp");
-		properties.put("destinationName", "Devoxx 2011");
-		properties.put("destinationDescription",
-				"The best Java-conference in the whole universe.");
-		properties.put("departureDate", new Date());
-		properties.put("returnDate", new Date());
+		newRequest = travelRequestService.submitNewTravelRequest(newRequest);
 
-		return properties;
+		// Check if the process is started
+		ProcessInstance processInstance = runtimeService
+				.createProcessInstanceQuery()
+				.processInstanceBusinessKey(newRequest.getId().toString())
+				.singleResult();
+		Assert.assertNotNull(processInstance);
+
+		// Check if the travel request JPA-entity is available
+		TravelRequest travelRequestFromVariable = (TravelRequest) runtimeService
+				.getVariable(processInstance.getId(), "request");
+		Assert.assertNotNull(travelRequestFromVariable);
+
+		// Check if a task is available, queued for a manager
+		Task theTask = taskService.createTaskQuery()
+				.taskCandidateGroup("management").singleResult();
+		Assert.assertNotNull(theTask);
+		Assert.assertEquals(processInstance.getId(),
+				theTask.getProcessInstanceId());
+
+		// Claim the task as manager
+		Authentication.setAuthenticatedUserId("manager");
+		taskService.claim(theTask.getId(), "manager");
+
+		// Approve the task
+		travelRequestService.approveTravelRequest(newRequest, "Have fun!");
+		
+		// Check if a "book tickets" task is available
+		Task bookTicketsTask = taskService.createTaskQuery()
+				.processInstanceId(processInstance.getId())
+				.taskCandidateGroup("secretary")
+				.singleResult();
+		Assert.assertNotNull(bookTicketsTask);
+		Assert.assertEquals("Book tickets for trip to BELGIUM by traveller", bookTicketsTask.getDescription());
+		
+		// Claim task
+		taskService.claim(bookTicketsTask.getId(), "secretary");
 	}
+	
+	
 
-	protected Map<String, Object> getRejectProperties() {
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("travelApproved", false);
-		properties.put("approvalMotivation", "Test Rejection");
-		return properties;
+	/**
+	 * Create a travel request that passes validation.
+	 * 
+	 * @return a valid {@link TravelRequest} instance.
+	 */
+	private TravelRequest fillTravelRequest() {
+		TravelRequest newRequest = new TravelRequest(); 
+		newRequest.setCountry(Country.BELGIUM);
+		newRequest.setRequesterUserId("traveller");
+		newRequest.setRequesterUserName("Traveller");
+		newRequest.setDepartureDate(Calendar.getInstance().getTime());
+		newRequest.setReturnDate(Calendar.getInstance().getTime());
+		newRequest.setDescription("Going to Devoxx in Antwerp");
+		return newRequest;
 	}
 }

@@ -54,7 +54,12 @@ public class TravelRequestServiceImpl implements TravelRequestService {
         request.setRequesterUserId(Authentication.getAuthenticatedUserId());
         request = repository.save(request);
         String businessKey = request.getId().toString();
-        runtimeService.startProcessInstanceByKey("simple-travel", businessKey); 
+        
+        // Also set the request as process-variable
+        HashMap<String, Object> variables = new HashMap<String, Object>();
+        variables.put("request", request);
+        
+        runtimeService.startProcessInstanceByKey("simple-travel", businessKey, variables); 
         return request;
     }
 
@@ -103,7 +108,6 @@ public class TravelRequestServiceImpl implements TravelRequestService {
         final ProcessInstance processInstance = getProcessInstanceForRequest(request);
         final Task travelApprovalTask = getTravelApprovalTask(processInstance);
         final HashMap<String, Object> processVariables = new HashMap<String, Object>();
-        processVariables.put("travelApproved", decision.getDecision() == Decision.APPROVED);
         taskService.complete(travelApprovalTask.getId(), processVariables);
     }
     

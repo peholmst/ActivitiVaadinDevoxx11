@@ -14,4 +14,6 @@ public interface TravelRequestService {
     
     void denyTravelRequest(TravelRequest request, String motivation);
         
+    void bookTickets(TravelRequest request);
+    
 }

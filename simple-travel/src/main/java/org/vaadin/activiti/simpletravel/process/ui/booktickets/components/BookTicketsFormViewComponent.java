@@ -1,6 +1,5 @@
-package org.vaadin.activiti.simpletravel.process.ui.approvetravelrequest.components;
+package org.vaadin.activiti.simpletravel.process.ui.booktickets.components;
 
-import com.vaadin.terminal.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -8,7 +7,6 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import java.text.DateFormat;
@@ -16,24 +14,21 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.activiti.simpletravel.domain.TravelRequest;
-import org.vaadin.activiti.simpletravel.process.ui.approvetravelrequest.ApproveTravelRequestFormPresenter;
-import org.vaadin.activiti.simpletravel.process.ui.approvetravelrequest.ApproveTravelRequestFormView;
-import org.vaadin.activiti.simpletravel.service.ValidationException;
+import org.vaadin.activiti.simpletravel.process.ui.booktickets.BookTicketsFormPresenter;
+import org.vaadin.activiti.simpletravel.process.ui.booktickets.BookTicketsFormView;
 import org.vaadin.activiti.simpletravel.ui.forms.TaskForm;
 import org.vaadin.activiti.simpletravel.ui.forms.TaskFormViewComponent;
 
-@TaskForm(formKey = "approveTravelRequest")
+@TaskForm(formKey = "bookTickets")
 @Configurable
-public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent<ApproveTravelRequestFormView, ApproveTravelRequestFormPresenter> implements ApproveTravelRequestFormView {
+public class BookTicketsFormViewComponent extends TaskFormViewComponent<BookTicketsFormView, BookTicketsFormPresenter> implements BookTicketsFormView {
 
     private VerticalLayout layout;
-    private TextArea motivation;
     private Label requester;
     private Label time;
     private Label destination;
     private Label description;
-    private Button approve;
-    private Button deny;
+    private Button ticketsBooked;
     private Button cancel;
 
     @Override
@@ -42,7 +37,7 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        final Label header = new Label("Approve Trip Request");
+        final Label header = new Label("Book Tickets");
         header.addStyleName(Reindeer.LABEL_H1);
         layout.addComponent(header);
 
@@ -54,34 +49,18 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
         destination = createLabelAndAddToLayout("Destination:", requestLayout);
         description = createLabelAndAddToLayout("Description:", requestLayout);
 
-        motivation = new TextArea("Motivation");
-        motivation.setRequired(true);
-        motivation.setRows(10);
-        motivation.setWidth("300px");
-        layout.addComponent(motivation);
-
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setSpacing(true);
 
-        approve = new Button("Approve", new Button.ClickListener() {
+        ticketsBooked = new Button("Tickets have been booked", new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                approveClick();
+                ticketsBookedClick();
             }
         });
-        approve.setDisableOnClick(true);
-        buttons.addComponent(approve);
-
-        deny = new Button("Deny", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                denyClick();
-            }
-        });
-        deny.setDisableOnClick(true);
-        buttons.addComponent(deny);
+        ticketsBooked.setDisableOnClick(true);
+        buttons.addComponent(ticketsBooked);
 
         cancel = new Button("Cancel", new Button.ClickListener() {
 
@@ -120,29 +99,11 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
         description.setValue(request.getDescription());
     }
 
-    private void approveClick() {
-        getPresenter().approve((String) motivation.getValue());
-    }
-
-    private void denyClick() {
-        getPresenter().deny((String) motivation.getValue());
-    }
-
     private void cancelClick() {
         getPresenter().cancel();
     }
 
-    @Override
-    public void setValidationError(ValidationException error) {
-        motivation.setComponentError(new UserError(error.getMessage()));
-        // enable buttons that were disabled when clicked
-        approve.setEnabled(true); 
-        deny.setEnabled(true);
+    private void ticketsBookedClick() {
+        getPresenter().bookTickets();;
     }
-
-    @Override
-    public void clearValidationError() {
-        motivation.setComponentError(null);
-    }
-            
 }

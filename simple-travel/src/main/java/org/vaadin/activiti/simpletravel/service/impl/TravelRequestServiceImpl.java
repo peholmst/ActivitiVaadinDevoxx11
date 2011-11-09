@@ -134,4 +134,21 @@ public class TravelRequestServiceImpl implements TravelRequestService {
         }
         return findTravelRequestById(Long.parseLong(processInstance.getBusinessKey()));
     }
+
+    @Override
+    @Transactional
+    @RequireGroup(Groups.GROUP_SECRETARIES)
+    public void bookTickets(TravelRequest request) {
+        final ProcessInstance processInstance = getProcessInstanceForRequest(request);
+        final Task bookTicketsTask = getBookTicketsTask(processInstance);
+        taskService.complete(bookTicketsTask.getId());
+    }
+    
+    private Task getBookTicketsTask(ProcessInstance processInstance) {
+        return taskService.createTaskQuery().
+                processInstanceId(processInstance.getId()).
+                taskDefinitionKey("usertask2").
+                singleResult();
+    }
+    
 }

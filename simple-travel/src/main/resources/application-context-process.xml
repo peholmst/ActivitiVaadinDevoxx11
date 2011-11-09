@@ -54,7 +54,7 @@
     <context:component-scan base-package="org.vaadin.activiti.simpletravel.domain.repositories"/>        
     <context:component-scan base-package="org.vaadin.activiti.simpletravel.service"/> 
     
-    <bean id="employeeService" class="org.vaadin.activiti.simpletravel.test.DummyEmployeeService" />       
+    <!--<bean id="employeeService" class="org.vaadin.activiti.simpletravel.test.DummyEmployeeService" />       -->
     
     <bean id="eclipseLinkVendorAdapter" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
         <property name="databasePlatform" value="HSQL" />

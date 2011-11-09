@@ -51,7 +51,7 @@ public class TravelRequest extends AbstractEntity {
     @CloneThis
     @Valid
     protected TravelRequestDecision decision;
-
+    
     public Country getCountry() {
         return country;
     }

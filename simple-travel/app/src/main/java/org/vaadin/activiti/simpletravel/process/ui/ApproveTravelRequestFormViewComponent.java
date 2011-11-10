@@ -4,16 +4,11 @@ import com.vaadin.terminal.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.activiti.simpletravel.domain.TravelRequest;
 import org.vaadin.activiti.simpletravel.domain.validation.ValidationException;
@@ -26,10 +21,7 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
 
     private VerticalLayout layout;
     private TextArea motivation;
-    private Label requester;
-    private Label time;
-    private Label destination;
-    private Label description;
+    private TravelRequestViewerComponent requestViewer;
     private Button approve;
     private Button deny;
     private Button cancel;
@@ -44,13 +36,8 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
         header.addStyleName(Reindeer.LABEL_H1);
         layout.addComponent(header);
 
-        FormLayout requestLayout = new FormLayout();
-        layout.addComponent(requestLayout);
-
-        requester = createLabelAndAddToLayout("Requester:", requestLayout);
-        time = createLabelAndAddToLayout("Time:", requestLayout);
-        destination = createLabelAndAddToLayout("Destination:", requestLayout);
-        description = createLabelAndAddToLayout("Description:", requestLayout);
+        requestViewer = new TravelRequestViewerComponent();
+        layout.addComponent(requestViewer);
 
         motivation = new TextArea("Motivation");
         motivation.setRequired(true);
@@ -97,25 +84,9 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
         return layout;
     }
 
-    private Label createLabelAndAddToLayout(String caption, Layout layout) {
-        Label lbl = new Label();
-        lbl.setCaption(caption);
-        layout.addComponent(lbl);
-        return lbl;
-    }
-
     @Override
     public void setRequest(TravelRequest request) {
-        requester.setValue(request.getRequesterFullName());
-        final DateFormat dateFormat = SimpleDateFormat.getDateInstance();
-        if (DateUtils.isSameDay(request.getReturnDate(), request.getDepartureDate())) {
-            time.setValue(dateFormat.format(request.getReturnDate()));
-        } else {
-            time.setValue(String.format("%s - %s",
-                    dateFormat.format(request.getDepartureDate()), dateFormat.format(request.getReturnDate())));
-        }
-        destination.setValue(request.getCountry().getDisplayName());
-        description.setValue(request.getDescription());
+        requestViewer.setRequest(request);
     }
 
     private void approveClick() {

@@ -1,5 +1,6 @@
 package org.vaadin.activiti.simpletravel.process.ui;
 
+import com.vaadin.terminal.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -8,17 +9,19 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.vaadin.activiti.simpletravel.domain.TravelRequest;
+import org.vaadin.activiti.simpletravel.domain.TravelInvoice;
+import org.vaadin.activiti.simpletravel.domain.validation.ValidationException;
 import org.vaadin.activiti.simpletravel.ui.forms.TaskForm;
 import org.vaadin.activiti.simpletravel.ui.forms.TaskFormViewComponent;
 
-@TaskForm(formKey = "bookTickets")
+@TaskForm(formKey = "enterExpenses")
 @Configurable
-public class BookTicketsFormViewComponent extends TaskFormViewComponent<BookTicketsFormView, BookTicketsFormPresenter> implements BookTicketsFormView {
+public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterExpensesFormView, EnterExpensesFormPresenter> implements EnterExpensesFormView {
 
     private VerticalLayout layout;
     private TravelRequestViewerComponent requestViewer;
-    private Button ticketsBooked;
+    private ExpensesEditorComponent expensesEditor;
+    private Button save;
     private Button cancel;
 
     @Override
@@ -27,25 +30,28 @@ public class BookTicketsFormViewComponent extends TaskFormViewComponent<BookTick
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        final Label header = new Label("Book Tickets");
+        final Label header = new Label("Enter Expenses");
         header.addStyleName(Reindeer.LABEL_H1);
         layout.addComponent(header);
 
         requestViewer = new TravelRequestViewerComponent();
         layout.addComponent(requestViewer);
 
+        expensesEditor = new ExpensesEditorComponent();
+        layout.addComponent(expensesEditor);
+
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setSpacing(true);
 
-        ticketsBooked = new Button("Tickets have been booked", new Button.ClickListener() {
+        save = new Button("Save", new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                ticketsBookedClick();
+                saveClick();
             }
         });
-        ticketsBooked.setDisableOnClick(true);
-        buttons.addComponent(ticketsBooked);
+        save.setDisableOnClick(true);
+        buttons.addComponent(save);
 
         cancel = new Button("Cancel", new Button.ClickListener() {
 
@@ -64,15 +70,28 @@ public class BookTicketsFormViewComponent extends TaskFormViewComponent<BookTick
     }
 
     @Override
-    public void setRequest(TravelRequest request) {
-        requestViewer.setRequest(request);
+    public void setInvoice(TravelInvoice invoice) {
+        requestViewer.setRequest(invoice.getRequest());
+        expensesEditor.setExpenses(invoice.getExpenses());
+    }
+
+    private void saveClick() {
+        getPresenter().submitTravelInvoice(expensesEditor.getExpenses());
     }
 
     private void cancelClick() {
         getPresenter().cancel();
     }
 
-    private void ticketsBookedClick() {
-        getPresenter().bookTickets();
+    @Override
+    public void setValidationError(ValidationException error) {
+        expensesEditor.setComponentError(new UserError(error.getMessage()));
+        save.setEnabled(true);
+        cancel.setEnabled(true);
+    }
+
+    @Override
+    public void clearValidationError() {
+        expensesEditor.setComponentError(null);
     }
 }

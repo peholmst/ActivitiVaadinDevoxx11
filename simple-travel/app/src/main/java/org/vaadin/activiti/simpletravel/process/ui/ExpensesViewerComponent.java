@@ -35,17 +35,5 @@ public class ExpensesViewerComponent extends CustomComponent {
     public Collection<Expense> getExpenses() {
         return container.getItemIds();
     }
-
-    @Override
-    public void setSizeFull() {
-        super.setSizeFull();
-        table.setSizeFull();
-    }
-
-    @Override
-    public void setSizeUndefined() {
-        super.setSizeUndefined();
-        table.setSizeUndefined();
-    }
     
 }

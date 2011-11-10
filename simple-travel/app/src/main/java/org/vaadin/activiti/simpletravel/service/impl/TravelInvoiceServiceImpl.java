@@ -58,8 +58,11 @@ public class TravelInvoiceServiceImpl extends AbstractServiceImpl implements Tra
     @Transactional
     @RequireGroup(Groups.GROUP_PAYROLLADMINS)
     public void payExpences(TravelInvoice invoice) {
+        ValidationUtil.validateAndThrow(validator, invoice);
         final ProcessInstance processInstance = getProcessInstanceForInvoice(invoice);
         final Task task = getPayExpencesTask(processInstance);
+        invoice.setPaid(true);
+        repository.save(invoice);
         taskService.complete(task.getId());
     }
     

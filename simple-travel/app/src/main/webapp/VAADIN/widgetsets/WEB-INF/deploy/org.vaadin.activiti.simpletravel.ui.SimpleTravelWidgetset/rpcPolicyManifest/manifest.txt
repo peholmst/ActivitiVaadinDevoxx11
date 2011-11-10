@@ -1,0 +1,2 @@
+# Module org.vaadin.activiti.simpletravel.ui.SimpleTravelWidgetset
+# RPC service class, partial path of RPC policy file

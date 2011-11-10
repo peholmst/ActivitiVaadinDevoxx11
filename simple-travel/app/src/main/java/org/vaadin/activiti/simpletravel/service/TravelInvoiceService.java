@@ -1,20 +1,15 @@
 package org.vaadin.activiti.simpletravel.service;
 
 import org.vaadin.activiti.simpletravel.domain.TravelInvoice;
+import org.vaadin.activiti.simpletravel.domain.TravelRequest;
 
 public interface TravelInvoiceService {
     
-    TravelInvoice submitNewTravelInvoice(TravelInvoice invoice);
+    TravelInvoice findInvoiceForRequest(TravelRequest request);
 
-    TravelInvoice updateRejectedTravelInvoice(TravelInvoice invoice);
+    TravelInvoice saveTravelInvoice(TravelInvoice invoice);
     
-    TravelInvoice findTravelInvoiceById(long id);
-
     TravelInvoice findTravelInvoiceByProcessInstanceId(String processInstanceId);
-
-    void approveTravelInvoice(TravelInvoice invoice, String motivation);
-
-    void denyTravelInvoice(TravelInvoice invoice, String motivation);
 
     void payExpences(TravelInvoice invoice);    
 }

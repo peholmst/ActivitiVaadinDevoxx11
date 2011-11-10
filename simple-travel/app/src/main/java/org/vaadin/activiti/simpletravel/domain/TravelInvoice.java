@@ -2,6 +2,7 @@ package org.vaadin.activiti.simpletravel.domain;
 
 import com.github.peholmst.stuff4vaadin.clone.CloneThis;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -63,7 +64,7 @@ public class TravelInvoice extends AbstractEntity {
      * {@link #removeExpence(org.vaadin.activiti.simpletravel.domain.Expence) } to make changes
      * to the set of expenses.
      */
-    public Set<Expense> getExpenses() {
+    public Collection<Expense> getExpenses() {
         HashSet<Expense> expenseClones = new HashSet<Expense>();
         for (Expense expense : expenses) {
             expenseClones.add((Expense) expense.clone());
@@ -71,6 +72,15 @@ public class TravelInvoice extends AbstractEntity {
         return expenseClones;
     }
 
+    public void setExpenses(Collection<Expense> expenses) {
+        this.expenses = new HashSet<Expense>();
+        if (expenses != null) {
+            for (Expense expense : expenses) {
+                this.expenses.add((Expense) expense.clone());
+            }
+        }       
+    }
+    
     public void addExpense(Expense expenseToAdd) {
         expenses.add((Expense) expenseToAdd.clone());
     }

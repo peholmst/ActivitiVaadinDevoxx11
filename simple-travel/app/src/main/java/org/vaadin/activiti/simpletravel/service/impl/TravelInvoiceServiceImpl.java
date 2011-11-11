@@ -18,8 +18,7 @@ import org.vaadin.activiti.simpletravel.service.TravelRequestService;
 public class TravelInvoiceServiceImpl extends AbstractServiceImpl implements TravelInvoiceService {
 
     @Autowired
-    protected TravelInvoiceRepository repository;   
-    
+    protected TravelInvoiceRepository repository;
     @Autowired
     protected TravelRequestService requestService;
 
@@ -40,7 +39,7 @@ public class TravelInvoiceServiceImpl extends AbstractServiceImpl implements Tra
         final Task task = getEnterExpencesTask(processInstance);
         taskService.complete(task.getId());
         return invoice;
-    }    
+    }
 
     @Override
     @Transactional
@@ -65,19 +64,28 @@ public class TravelInvoiceServiceImpl extends AbstractServiceImpl implements Tra
         repository.save(invoice);
         taskService.complete(task.getId());
     }
-    
+
     private ProcessInstance getProcessInstanceForInvoice(TravelInvoice invoice) {
         return runtimeService.createProcessInstanceQuery().
                 processInstanceBusinessKey(invoice.getRequest().getId().toString(), "simple-travel").
                 singleResult();
     }
-    
+
     private Task getEnterExpencesTask(ProcessInstance processInstance) {
         return findTaskByDefinitionKey(processInstance, "enterExpenses");
-    }    
-    
+    }
+
     private Task getPayExpencesTask(ProcessInstance processInstance) {
         return findTaskByDefinitionKey(processInstance, "payout");
     }
-    
+
+    @Override
+    public void approveTravelInvoice(TravelInvoice request, String motivation) {
+        // TODO Implement me!
+    }
+
+    @Override
+    public void rejectTravelInvoice(TravelInvoice request, String motivation) {
+        // TODO Implement me!
+    }
 }

@@ -30,6 +30,7 @@ public class TravelRequestServiceImpl extends AbstractServiceImpl implements Tra
     public TravelRequest submitNewTravelRequest(TravelRequest request) {
         ValidationUtil.validateAndThrow(validator, request);
         request.setRequesterUserId(Authentication.getAuthenticatedUserId());
+        request.setRequesterUserName(getFullNameOfUser(request.getRequesterUserId()));
         request = repository.save(request);
         String businessKey = request.getId().toString();
         
@@ -45,22 +46,9 @@ public class TravelRequestServiceImpl extends AbstractServiceImpl implements Tra
     @Transactional
     @RequireGroup(Groups.GROUP_EMPLOYEES)
     public TravelRequest findTravelRequestById(long id) {
-        TravelRequest request = repository.findById(id);
-        if (request != null) {
-            request.setRequesterUserName(getFullNameOfUser(request.getRequesterUserId()));
-        }
-        return request;
+        return repository.findById(id);
     }
     
-    private String getFullNameOfUser(String userId) {
-        User user = identityService.createUserQuery().userId(userId).singleResult();
-        if (user == null) {
-            return null;
-        } else {
-            return String.format("%s %s", user.getFirstName(), user.getLastName());
-        }
-    }
-
     @Override
     @Transactional
     @RequireGroup(Groups.GROUP_MANAGERS)

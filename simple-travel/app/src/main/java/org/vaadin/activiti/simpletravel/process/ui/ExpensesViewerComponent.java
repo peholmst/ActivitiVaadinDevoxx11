@@ -18,11 +18,14 @@ public class ExpensesViewerComponent extends CustomComponent {
     public ExpensesViewerComponent() {
         layout = new VerticalLayout();
         layout.setSpacing(true);
+        layout.setSizeFull();
         setCompositionRoot(layout);
         
         table = new Table();
         table.setContainerDataSource(container);
         table.setVisibleColumns(new String[] {"description", "quantity", "price"});
+        table.setSizeFull();
+        table.setImmediate(true);
         layout.addComponent(table);
         layout.setExpandRatio(table, 1.0f);
     }

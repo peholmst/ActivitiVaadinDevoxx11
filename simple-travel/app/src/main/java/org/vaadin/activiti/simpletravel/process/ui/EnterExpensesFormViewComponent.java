@@ -38,6 +38,8 @@ public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterE
         layout.addComponent(requestViewer);
 
         expensesEditor = new ExpensesEditorComponent();
+        expensesEditor.setWidth("400px");
+        expensesEditor.setHeight("300px");
         layout.addComponent(expensesEditor);
 
         HorizontalLayout buttons = new HorizontalLayout();

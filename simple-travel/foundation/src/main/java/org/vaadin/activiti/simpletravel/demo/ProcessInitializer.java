@@ -13,23 +13,20 @@ import org.vaadin.activiti.simpletravel.identity.Groups;
 
 @Component
 public class ProcessInitializer implements Groups {
-    
+
     @Autowired
     private IdentityService identityService;
-    
     @Autowired
     private RepositoryService repositoryService;
-    
     private final Logger logger = LoggerFactory.getLogger(getClass());
-        
+
     @PostConstruct
     public void setUp() {
         setUpGroups();
         setUpUsers();
         deployProcess();
     }
-    
-    
+
     public void setUpUsers() {
         logger.info("Creating users for Activiti");
         addUser("traveler", "Tom", "Traveler", "tom@foobar.net", null);
@@ -37,21 +34,27 @@ public class ProcessInitializer implements Groups {
         addUser("secretary", "Steven", "Secretary", "steven@foobar.net", GROUP_SECRETARIES);
         addUser("payroll", "Patrick", "Payroll", "patrick@foobar.net", GROUP_PAYROLLADMINS);
     }
-    
+
     private void addUser(String username, String firstName, String lastName, String email, String group) {
-        logger.info("Adding user {} (firstName = {}, lastName = {}, email = {}, group = {})", new String[] {username, firstName, lastName, email, group});
-        User user = identityService.newUser(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPassword("p");
-        identityService.saveUser(user);
-        if (group != null) {
-            identityService.createMembership(username, group);
+        if (!userExists(username)) {
+            logger.info("Adding user {} (firstName = {}, lastName = {}, email = {}, group = {})", new String[]{username, firstName, lastName, email, group});
+            User user = identityService.newUser(username);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setEmail(email);
+            user.setPassword("p");
+            identityService.saveUser(user);
+            if (group != null) {
+                identityService.createMembership(username, group);
+            }
+            identityService.createMembership(username, GROUP_EMPLOYEES);
         }
-        identityService.createMembership(username, GROUP_EMPLOYEES);
     }
-    
+
+    private boolean userExists(String username) {
+        return identityService.createUserQuery().userId(username).singleResult() != null;
+    }
+
     private void setUpGroups() {
         logger.info("Creating user groups for Activiti");
         addGroup(GROUP_EMPLOYEES, "Employees");
@@ -59,16 +62,28 @@ public class ProcessInitializer implements Groups {
         addGroup(GROUP_MANAGERS, "Managers");
         addGroup(GROUP_PAYROLLADMINS, "Payroll Administrators");
     }
-    
+
     private void addGroup(String groupId, String name) {
-        logger.info("Adding group {} (name = {})", new String[] {groupId, name});
-        Group group = identityService.newGroup(groupId);
-        group.setName(name);
-        identityService.saveGroup(group);
+        if (!groupExists(groupId)) {
+            logger.info("Adding group {} (name = {})", new String[]{groupId, name});
+            Group group = identityService.newGroup(groupId);
+            group.setName(name);
+            identityService.saveGroup(group);
+        }
+    }
+
+    private boolean groupExists(String groupId) {
+        return identityService.createGroupQuery().groupId(groupId).singleResult() != null;
+    }
+
+    private void deployProcess() {
+        if (!isDeployed()) {
+            logger.info("Deploying process");
+            repositoryService.createDeployment().addClasspathResource("process/simple-travel.bpmn20.xml").deploy();
+        }
     }
     
-    private void deployProcess() {
-        logger.info("Deploying process");
-        repositoryService.createDeployment().addClasspathResource("process/simple-travel.bpmn20.xml").deploy();
+    private boolean isDeployed() {
+        return repositoryService.createProcessDefinitionQuery().processDefinitionKey("simple-travel").singleResult() != null;
     }
 }

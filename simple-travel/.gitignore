@@ -2,4 +2,5 @@
 /target
 activiti.db.h2.db
 activiti.db.trace.db
+activiti.db.lock.db
 catalog.xml

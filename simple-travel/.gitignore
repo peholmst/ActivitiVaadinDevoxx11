@@ -1,2 +1,5 @@
 /.settings
 /target
+activiti.db.h2.db
+activiti.db.trace.db
+catalog.xml

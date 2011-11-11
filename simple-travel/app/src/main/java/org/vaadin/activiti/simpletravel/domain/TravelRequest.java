@@ -10,7 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -28,8 +27,8 @@ public class TravelRequest extends AbstractEntity {
     public static final String PROP_COUNTRY = "country";
     public static final String PROP_DESCRIPTION = "description";
     @Column(nullable = false)
-    protected String requesterUserId;
-    @Transient
+    protected String requesterUserId;    
+    @Column(nullable = false)
     protected String requesterUserName;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)

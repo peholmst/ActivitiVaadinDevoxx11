@@ -3,15 +3,19 @@ package org.vaadin.activiti.simpletravel.test;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +47,9 @@ public class TravelProcessTest {
 	
 	@Autowired
 	private TravelRequestService travelRequestService;
+	
+	@Autowired
+	private IdentityService identityService;
 
 	@Autowired
 	@Rule
@@ -152,6 +159,23 @@ public class TravelProcessTest {
 		taskService.claim(bookTicketsTask.getId(), "secretary");
 	}
 	
+	@Before
+	public void setUp() {
+		User traveller = identityService.newUser("traveller");
+		traveller.setFirstName("Joe");
+		traveller.setLastName("Traveller");
+		
+		identityService.saveUser(traveller);
+	}
+
+	@After
+	public void tearDown() {
+		try {
+			identityService.deleteUser("traveller");
+		} catch(Throwable t) {
+			// ignore
+		}
+	}
 	
 
 	/**

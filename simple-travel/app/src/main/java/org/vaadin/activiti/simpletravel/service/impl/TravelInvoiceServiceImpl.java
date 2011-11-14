@@ -1,11 +1,16 @@
 package org.vaadin.activiti.simpletravel.service.impl;
 
+import java.util.Date;
+import java.util.HashMap;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.vaadin.activiti.simpletravel.domain.Decision;
 import org.vaadin.activiti.simpletravel.domain.TravelInvoice;
+import org.vaadin.activiti.simpletravel.domain.TravelInvoiceDecision;
 import org.vaadin.activiti.simpletravel.domain.TravelRequest;
 import org.vaadin.activiti.simpletravel.domain.repositories.TravelInvoiceRepository;
 import org.vaadin.activiti.simpletravel.domain.validation.ValidationUtil;
@@ -77,15 +82,36 @@ public class TravelInvoiceServiceImpl extends AbstractServiceImpl implements Tra
 
     private Task getPayExpencesTask(ProcessInstance processInstance) {
         return findTaskByDefinitionKey(processInstance, "payout");
+    }    
+    
+    @Override
+    @Transactional
+    @RequireGroup(Groups.GROUP_MANAGERS)
+    public void approveTravelInvoice(TravelInvoice invoice, String motivation) {
+        final TravelInvoiceDecision decision = new TravelInvoiceDecision(Decision.APPROVED, motivation, Authentication.getAuthenticatedUserId(), new Date());
+        setDecisionAndSave(invoice, decision);
     }
 
     @Override
-    public void approveTravelInvoice(TravelInvoice request, String motivation) {
-        // TODO Implement me!
+    @Transactional
+    @RequireGroup(Groups.GROUP_MANAGERS)
+    public void rejectTravelInvoice(TravelInvoice invoice, String motivation) {
+        final TravelInvoiceDecision decision = new TravelInvoiceDecision(Decision.DENIED, motivation, Authentication.getAuthenticatedUserId(), new Date());
+        setDecisionAndSave(invoice, decision);
     }
-
-    @Override
-    public void rejectTravelInvoice(TravelInvoice request, String motivation) {
-        // TODO Implement me!
-    }
+    
+    private void setDecisionAndSave(TravelInvoice invoice, TravelInvoiceDecision decision) {
+        invoice.setDecision(decision);
+        ValidationUtil.validateAndThrow(validator, decision);
+        repository.save(invoice);
+        final ProcessInstance processInstance = getProcessInstanceForInvoice(invoice);
+        final Task expensesApprovalTask = getExpensesApprovalTask(processInstance);
+        final HashMap<String, Object> processVariables = new HashMap<String, Object>();
+        taskService.complete(expensesApprovalTask.getId(), processVariables);
+    }    
+    
+    private Task getExpensesApprovalTask(ProcessInstance processInstance) {
+        return findTaskByDefinitionKey(processInstance, "approveExpenses");
+    }    
+    
 }

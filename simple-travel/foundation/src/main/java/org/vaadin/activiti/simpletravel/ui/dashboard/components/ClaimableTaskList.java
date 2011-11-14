@@ -16,7 +16,7 @@ public class ClaimableTaskList extends TaskList {
     }
 
     @Override
-    protected PopupView createTaskPopupView(Task task) {
+    protected PopupView createTaskComponent(Task task) {
         
         final String taskId = task.getId();
         final String taskName = task.getName();

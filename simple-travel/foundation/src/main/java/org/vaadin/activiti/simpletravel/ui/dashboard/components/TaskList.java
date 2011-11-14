@@ -1,7 +1,7 @@
 package org.vaadin.activiti.simpletravel.ui.dashboard.components;
 
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public abstract class TaskList extends Panel {
     
     private DashboardPresenter presenter;
     private List<Task> tasks;
-    private Map<String, PopupView> taskPopupViews = new HashMap<String, PopupView>();
+    private Map<String, Component> taskComponents = new HashMap<String, Component>();
 
     public TaskList(DashboardPresenter presenter) {
         setStyleName(Reindeer.PANEL_LIGHT);
@@ -41,7 +41,7 @@ public abstract class TaskList extends Panel {
     protected void updateComponent() {
         if (getTasks() == null || getTasks().isEmpty()) {
             removeAllComponents();
-            taskPopupViews.clear();
+            taskComponents.clear();
         } else {
             VerticalLayout layout = (VerticalLayout) getContent();
 
@@ -50,18 +50,18 @@ public abstract class TaskList extends Panel {
                 newTaskIds.add(task.getId());
             }
             
-            Set<String> taskIdsToDelete = new HashSet<String>(taskPopupViews.keySet());
+            Set<String> taskIdsToDelete = new HashSet<String>(taskComponents.keySet());
             taskIdsToDelete.removeAll(newTaskIds);            
             for (String taskIdToDelete : taskIdsToDelete) {
-                layout.removeComponent(taskPopupViews.remove(taskIdToDelete));
+                layout.removeComponent(taskComponents.remove(taskIdToDelete));
             }            
             
             int i = 0;
             for (Task task : getTasks()) {
-                PopupView taskComponent = taskPopupViews.get(task.getId());
+                Component taskComponent = taskComponents.get(task.getId());
                 if (taskComponent == null) {
-                    taskComponent = createTaskPopupView(task);
-                    taskPopupViews.put(task.getId(), taskComponent);
+                    taskComponent = createTaskComponent(task);
+                    taskComponents.put(task.getId(), taskComponent);
                     layout.addComponent(taskComponent, i);
                 } else if (i != layout.getComponentIndex(taskComponent)) {
                     layout.removeComponent(taskComponent);
@@ -72,5 +72,5 @@ public abstract class TaskList extends Panel {
         }
     }
 
-    protected abstract PopupView createTaskPopupView(Task task);
+    protected abstract Component createTaskComponent(Task task);
 }

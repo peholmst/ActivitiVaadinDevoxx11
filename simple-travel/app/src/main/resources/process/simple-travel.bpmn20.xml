@@ -43,14 +43,14 @@ ${request.decision.motivationOfDecision}]]></activiti:expression>
     </userTask>
     <sequenceFlow id="flow6" name="" sourceRef="usertask2" targetRef="enterExpenses"></sequenceFlow>
     <userTask id="approveExpenses" name="Approve Expenses" activiti:candidateGroups="accountancy" activiti:formKey="approveExpenses">
-      <documentation>Please judge if the expenses done by ${initiator} on his/her trip to ${destinationName} are justified and can be reimbursed.</documentation>
+      <documentation>Please judge if the expenses done by ${initiator} on his/her trip to ${request.country} are justified and can be reimbursed.</documentation>
     </userTask>
     <sequenceFlow id="flow7" name="" sourceRef="enterExpenses" targetRef="approveExpenses"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow8" name="" sourceRef="approveExpenses" targetRef="exclusivegateway2"></sequenceFlow>
     <boundaryEvent id="expenseTimeLimit" name="Expense time limit" cancelActivity="true" attachedToRef="enterExpenses">
       <timerEventDefinition>
-        <timeDuration>PT30D</timeDuration>
+        <timeDuration>P30D</timeDuration>
       </timerEventDefinition>
     </boundaryEvent>
     <userTask id="payout" name="Payout expenses" activiti:candidateGroups="cashier" activiti:formKey="payoutExpenses"></userTask>

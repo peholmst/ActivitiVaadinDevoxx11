@@ -11,9 +11,5 @@ public interface TravelInvoiceService {
     
     TravelInvoice findTravelInvoiceByProcessInstanceId(String processInstanceId);
 
-    void approveTravelInvoice(TravelInvoice invoice, String motivation);
-
-    void rejectTravelInvoice(TravelInvoice invoice, String motivation);
-    
     void payExpences(TravelInvoice invoice);    
 }

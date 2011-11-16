@@ -26,8 +26,8 @@ public class TravelRequestFormFieldFactory extends DefaultFieldFactory {
             f = c;
         } else if (propertyId.equals(TravelRequest.PROP_DESCRIPTION)) {
             TextArea t = new TextArea("Description");
-            t.setWidth("300px");
-            t.setRows(10);
+            t.setWidth("200px");
+            t.setRows(5);
             f = t;
         } else {
             f = super.createField(item, propertyId, uiContext);

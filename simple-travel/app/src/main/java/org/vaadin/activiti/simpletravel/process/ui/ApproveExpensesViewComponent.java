@@ -1,6 +1,7 @@
 package org.vaadin.activiti.simpletravel.process.ui;
 
 import com.vaadin.terminal.UserError;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -38,23 +39,25 @@ public class ApproveExpensesViewComponent extends TaskFormViewComponent<ApproveE
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setSizeFull();
+        setSizeFull();
         
         Label header = new Label("Approve Expenses");
         header.addStyleName(Reindeer.LABEL_H1);
-        layout.addComponent(layout);
+        layout.addComponent(header);
         
         requestViewer = new TravelRequestViewerComponent();
-        layout.addComponent(layout);
+        layout.addComponent(requestViewer);
         
         expensesViewer = new ExpensesViewerComponent();
-        expensesViewer.setWidth("400px");
-        expensesViewer.setHeight("300px");
-        layout.addComponent(layout);
+        expensesViewer.setSizeFull();
+        layout.addComponent(expensesViewer);
+        layout.setExpandRatio(expensesViewer, 2.0F);
         
         motivation = new TextArea("Motivation");
-        motivation.setRows(10);
-        motivation.setWidth("300px");
+        motivation.setSizeFull();
         layout.addComponent(motivation);
+        layout.setExpandRatio(motivation, 1.0F);
         
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setSpacing(true);
@@ -85,7 +88,9 @@ public class ApproveExpensesViewComponent extends TaskFormViewComponent<ApproveE
                 getPresenter().cancel();
             }
         });
+        cancel.addStyleName(Reindeer.BUTTON_LINK);
         buttons.addComponent(cancel);
+        buttons.setComponentAlignment(cancel, Alignment.MIDDLE_LEFT);
         
         return layout;
     }

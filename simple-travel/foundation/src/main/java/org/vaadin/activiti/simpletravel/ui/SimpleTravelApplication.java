@@ -14,6 +14,7 @@ public class SimpleTravelApplication extends Application implements TransactionL
 
     @Override
     public void init() {
+        setTheme("simpletravel");
         getContext().addTransactionListener(this);
         setMainWindow(new MainWindow());
     }

@@ -26,6 +26,7 @@ import com.github.peholmst.mvp4vaadin.Presenter;
 import com.github.peholmst.mvp4vaadin.View;
 import com.github.peholmst.mvp4vaadin.ViewEvent;
 import com.github.peholmst.mvp4vaadin.ViewListener;
+import java.util.HashSet;
 
 @Configurable
 public class DashboardPresenter extends Presenter<DashboardView> {
@@ -77,6 +78,12 @@ public class DashboardPresenter extends Presenter<DashboardView> {
     public void init() {
         User currentUser = identityService.createUserQuery().userId(currentUsername).singleResult();
         getView().setNameOfCurrentUser(currentUser.getFirstName(), currentUser.getLastName());
+        List<Group> groups = identityService.createGroupQuery().groupMember(currentUser.getId()).list();
+        HashSet<String> groupNames = new HashSet<String>();
+        for (Group group : groups) {
+            groupNames.add(group.getId());
+        }
+        getView().setGroupsOfCurrentUser(groupNames);        
         updateTaskListsInView();
         getView().setAvailableProcesses(getAvailableProcesses());        
         hideFormView();

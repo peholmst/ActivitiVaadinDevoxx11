@@ -13,10 +13,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Reindeer;
+import java.util.Collection;
 import java.util.List;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.activiti.simpletravel.identity.Groups;
 import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardPresenter;
 import org.vaadin.activiti.simpletravel.ui.dashboard.DashboardView;
 import org.vaadin.artur.icepush.ICEPush;
@@ -67,7 +69,6 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
         layout.setWidth("100%");
         layout.setMargin(true);
         layout.setSpacing(true);
-        layout.addStyleName(Reindeer.LAYOUT_BLACK);
         final Label title = new Label("Activiti + Vaadin - A Match Made in Heaven");
         title.addStyleName(Reindeer.LABEL_H1);
         layout.addComponent(title);
@@ -187,6 +188,19 @@ public class DashboardViewComponent extends AbstractViewComponent<DashboardView,
     public void showNewTasksMessage() {
         if (getWindow() != null) {
             getWindow().showNotification("You have new tasks", Notification.TYPE_TRAY_NOTIFICATION);
+        }
+    }
+
+    @Override
+    public void setGroupsOfCurrentUser(Collection<String> groups) {
+        if (groups.contains(Groups.GROUP_MANAGERS)) {
+            header.addStyleName("header-" + Groups.GROUP_MANAGERS);
+        } else if (groups.contains(Groups.GROUP_SECRETARIES)) {
+            header.addStyleName("header-" + Groups.GROUP_SECRETARIES);            
+        } else if (groups.contains(Groups.GROUP_PAYROLLADMINS)) {
+            header.addStyleName("header-" + Groups.GROUP_PAYROLLADMINS);
+        } else {
+            header.addStyleName(Reindeer.LAYOUT_BLACK);
         }
     }
 }

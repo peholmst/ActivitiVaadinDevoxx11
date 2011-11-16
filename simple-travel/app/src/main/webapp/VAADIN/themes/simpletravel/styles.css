@@ -1,0 +1,32 @@
+@charset "UTF-8";
+@import url(../reindeer/styles.css);
+
+.v-horizontallayout-header-management {
+    background: -moz-linear-gradient(top, #0f0, #060);
+    background: -webkit-gradient(linear, left top, left bottom, from(#0f0), to(#060));	
+}
+
+.v-horizontallayout-header-management .v-label-h1 {
+    color: #000;
+    text-shadow: #0f0 0 -1px 1px;
+}
+
+.v-horizontallayout-header-secretary {
+    background: -moz-linear-gradient(top, #f00, #600);
+    background: -webkit-gradient(linear, left top, left bottom, from(#f00), to(#600));	
+}
+
+.v-horizontallayout-header-secretary .v-label-h1 {
+    color: #000;
+    text-shadow: #f00 0 -1px 1px;
+}
+
+.v-horizontallayout-header-cashier {
+    background: -moz-linear-gradient(top, #ff0, #660);
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff0), to(#660));	
+}
+
+.v-horizontallayout-header-cashier .v-label-h1 {
+    color: #000;
+    text-shadow: #ff0 0 -1px 1px;
+}

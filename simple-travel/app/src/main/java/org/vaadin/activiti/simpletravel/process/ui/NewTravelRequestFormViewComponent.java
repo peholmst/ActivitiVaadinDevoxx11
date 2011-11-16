@@ -56,6 +56,8 @@ public class NewTravelRequestFormViewComponent extends StartFormViewComponent<Ne
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setSizeFull();
+        setSizeFull();
 
         final Label header = new Label("Request New Trip");
         header.addStyleName(Reindeer.LABEL_H1);
@@ -63,6 +65,7 @@ public class NewTravelRequestFormViewComponent extends StartFormViewComponent<Ne
 
         requestForm = createForm();
         layout.addComponent(requestForm);
+        layout.setExpandRatio(requestForm, 1.0f);
 
         return layout;
     }

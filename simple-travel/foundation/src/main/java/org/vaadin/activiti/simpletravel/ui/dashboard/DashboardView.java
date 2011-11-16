@@ -1,6 +1,7 @@
 package org.vaadin.activiti.simpletravel.ui.dashboard;
 
 import com.github.peholmst.mvp4vaadin.View;
+import java.util.Collection;
 import java.util.List;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
@@ -8,6 +9,8 @@ import org.activiti.engine.task.Task;
 public interface DashboardView extends View {
     
     void setNameOfCurrentUser(String firstName, String lastName);
+    
+    void setGroupsOfCurrentUser(Collection<String> groups);
     
     void setClaimableTasks(List<Task> tasks);
     

@@ -1,6 +1,7 @@
 package org.vaadin.activiti.simpletravel.process.ui;
 
 import com.vaadin.terminal.UserError;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -29,6 +30,8 @@ public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterE
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setSizeFull();
+        setSizeFull();
 
         final Label header = new Label("Enter Expenses");
         header.addStyleName(Reindeer.LABEL_H1);
@@ -38,9 +41,9 @@ public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterE
         layout.addComponent(requestViewer);
 
         expensesEditor = new ExpensesEditorComponent();
-        expensesEditor.setWidth("400px");
-        expensesEditor.setHeight("300px");
+        expensesEditor.setSizeFull();
         layout.addComponent(expensesEditor);
+        layout.setExpandRatio(expensesEditor, 1.0f);
 
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setSpacing(true);
@@ -65,6 +68,7 @@ public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterE
         cancel.addStyleName(Reindeer.BUTTON_LINK);
         cancel.setDisableOnClick(true);
         buttons.addComponent(cancel);
+        buttons.setComponentAlignment(cancel, Alignment.MIDDLE_LEFT);
 
         layout.addComponent(buttons);
 

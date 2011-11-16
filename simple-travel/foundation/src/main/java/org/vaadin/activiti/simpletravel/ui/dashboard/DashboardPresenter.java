@@ -170,11 +170,7 @@ public class DashboardPresenter extends Presenter<DashboardView> {
     
     protected List<Task> getClaimableTasks() {
         final TaskQuery query = taskService.createTaskQuery();        
-        
-        for (Group group : getGroupsOfCurrentUser()) {
-            query.taskCandidateGroup(group.getId());
-        }
-        
+        query.taskCandidateUser(currentUsername);        
         return query.list();
     }
     

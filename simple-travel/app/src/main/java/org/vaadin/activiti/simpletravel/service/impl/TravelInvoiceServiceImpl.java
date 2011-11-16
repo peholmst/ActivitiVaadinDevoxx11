@@ -76,7 +76,7 @@ public class TravelInvoiceServiceImpl extends AbstractServiceImpl implements Tra
     }
 
     private Task getPayExpencesTask(ProcessInstance processInstance) {
-        return findTaskByDefinitionKey(processInstance, "payout");
+        return findTaskByDefinitionKey(processInstance, "payoutExpenses");
     }    
     
 }

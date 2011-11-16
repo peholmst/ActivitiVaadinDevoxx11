@@ -42,7 +42,7 @@ ${request.decision.motivationOfDecision}]]></activiti:expression>
       <documentation>Enter the expenses you might have made during your travel to ${request.country} on ${request.departureDate}.</documentation>
     </userTask>
     <sequenceFlow id="flow6" name="" sourceRef="usertask2" targetRef="enterExpenses"></sequenceFlow>
-    <userTask id="approveExpenses" name="Approve Expenses" activiti:candidateGroups="accountancy" activiti:formKey="approveExpenses">
+    <userTask id="approveExpenses" name="Approve Expenses" activiti:candidateGroups="management" activiti:formKey="approveExpenses">
       <documentation>Please judge if the expenses done by ${initiator} on his/her trip to ${request.country} are justified and can be reimbursed.</documentation>
     </userTask>
     <sequenceFlow id="flow7" name="" sourceRef="enterExpenses" targetRef="approveExpenses"></sequenceFlow>

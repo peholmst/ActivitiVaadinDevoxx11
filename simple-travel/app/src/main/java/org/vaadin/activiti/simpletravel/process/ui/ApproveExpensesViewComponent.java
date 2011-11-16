@@ -41,15 +41,15 @@ public class ApproveExpensesViewComponent extends TaskFormViewComponent<ApproveE
         
         Label header = new Label("Approve Expenses");
         header.addStyleName(Reindeer.LABEL_H1);
-        layout.addComponent(layout);
+        layout.addComponent(header);
         
         requestViewer = new TravelRequestViewerComponent();
-        layout.addComponent(layout);
+        layout.addComponent(requestViewer);
         
         expensesViewer = new ExpensesViewerComponent();
         expensesViewer.setWidth("400px");
         expensesViewer.setHeight("300px");
-        layout.addComponent(layout);
+        layout.addComponent(expensesViewer);
         
         motivation = new TextArea("Motivation");
         motivation.setRows(10);

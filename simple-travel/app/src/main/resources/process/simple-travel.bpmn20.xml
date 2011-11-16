@@ -40,9 +40,9 @@ ${request.decision.motivationOfDecision}]]></activiti:expression>
     <endEvent id="endevent2" name="End"></endEvent>
     <userTask id="enterExpenses" name="Enter expenses" activiti:assignee="${initiator}" activiti:formKey="enterExpenses"></userTask>
     <userTask id="payoutExpenses" name="Payout expenses" activiti:candidateGroups="cashier" activiti:formKey="payoutExpenses"></userTask>
-    <sequenceFlow id="flow6" name="" sourceRef="usertask2" targetRef="usertask3"></sequenceFlow>
-    <sequenceFlow id="flow7" name="" sourceRef="usertask3" targetRef="usertask4"></sequenceFlow>
-    <sequenceFlow id="flow8" name="" sourceRef="usertask4" targetRef="endevent2"></sequenceFlow>
+    <sequenceFlow id="flow6" name="" sourceRef="usertask2" targetRef="enterExpenses"></sequenceFlow>
+    <sequenceFlow id="flow7" name="" sourceRef="enterExpenses" targetRef="payoutExpenses"></sequenceFlow>
+    <sequenceFlow id="flow8" name="" sourceRef="payoutExpenses" targetRef="endevent2"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_simple-travel">
     <bpmndi:BPMNPlane bpmnElement="simple-travel" id="BPMNPlane_simple-travel">
@@ -67,10 +67,10 @@ ${request.decision.motivationOfDecision}]]></activiti:expression>
       <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
         <omgdc:Bounds height="35" width="35" x="870" y="200"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+      <bpmndi:BPMNShape bpmnElement="enterExpenses" id="BPMNShape_usertask3">
         <omgdc:Bounds height="55" width="105" x="550" y="190"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
+      <bpmndi:BPMNShape bpmnElement="payoutExpenses" id="BPMNShape_usertask4">
         <omgdc:Bounds height="55" width="105" x="720" y="190"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">

@@ -54,11 +54,13 @@ ${request.decision.motivationOfDecision}]]></activiti:expression>
       </timerEventDefinition>
     </boundaryEvent>
     <userTask id="payout" name="Payout expenses" activiti:candidateGroups="cashier" activiti:formKey="payoutExpenses"></userTask>
-    <sequenceFlow id="flow9" name="" sourceRef="exclusivegateway2" targetRef="payout"></sequenceFlow>
-    <sequenceFlow id="flow10" name="" sourceRef="payout" targetRef="endevent2"></sequenceFlow>
     <sequenceFlow id="flow11" name="" sourceRef="exclusivegateway2" targetRef="enterExpenses">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approveExpenses}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${invoice.decision.decision == 'DENIED'}]]></conditionExpression>
     </sequenceFlow>
+    <sequenceFlow id="flow9" name="" sourceRef="exclusivegateway2" targetRef="payout">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${invoice.decision.decision == 'APPROVED'}]]></conditionExpression>        
+    </sequenceFlow>
+    <sequenceFlow id="flow10" name="" sourceRef="payout" targetRef="endevent2"></sequenceFlow>
     <endEvent id="endevent3" name="End"></endEvent>
     <sequenceFlow id="flow12" name="" sourceRef="expenseTimeLimit" targetRef="endevent3"></sequenceFlow>
   </process>

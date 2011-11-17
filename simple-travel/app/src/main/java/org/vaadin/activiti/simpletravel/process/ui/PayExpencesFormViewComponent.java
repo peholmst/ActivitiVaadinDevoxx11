@@ -27,6 +27,8 @@ public class PayExpencesFormViewComponent extends TaskFormViewComponent<PayExpen
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setSizeFull();
+        setSizeFull();
 
         final Label header = new Label("Pay Expenses");
         header.addStyleName(Reindeer.LABEL_H1);
@@ -36,7 +38,9 @@ public class PayExpencesFormViewComponent extends TaskFormViewComponent<PayExpen
         layout.addComponent(requestViewer);
 
         expensesViewer = new ExpensesViewerComponent();
+        expensesViewer.setSizeFull();
         layout.addComponent(expensesViewer);
+        layout.setExpandRatio(expensesViewer, 1.0f);
 
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setSpacing(true);

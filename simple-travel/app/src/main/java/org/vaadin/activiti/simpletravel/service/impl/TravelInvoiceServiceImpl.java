@@ -102,12 +102,12 @@ public class TravelInvoiceServiceImpl extends AbstractServiceImpl implements Tra
     
     private void setDecisionAndSave(TravelInvoice invoice, TravelInvoiceDecision decision) {
         invoice.setDecision(decision);
-        ValidationUtil.validateAndThrow(validator, decision);
-        repository.save(invoice);
+        ValidationUtil.validateAndThrow(validator, invoice);
+        invoice = repository.save(invoice);
         final ProcessInstance processInstance = getProcessInstanceForInvoice(invoice);
         final Task expensesApprovalTask = getExpensesApprovalTask(processInstance);
-        final HashMap<String, Object> processVariables = new HashMap<String, Object>();
-        taskService.complete(expensesApprovalTask.getId(), processVariables);
+        runtimeService.setVariable(processInstance.getProcessInstanceId(), "invoice", invoice);
+        taskService.complete(expensesApprovalTask.getId());
     }    
     
     private Task getExpensesApprovalTask(ProcessInstance processInstance) {

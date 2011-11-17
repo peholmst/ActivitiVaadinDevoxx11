@@ -10,6 +10,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.activiti.simpletravel.domain.Decision;
 import org.vaadin.activiti.simpletravel.domain.TravelInvoice;
 import org.vaadin.activiti.simpletravel.domain.validation.ValidationException;
 import org.vaadin.activiti.simpletravel.ui.forms.TaskForm;
@@ -21,6 +22,7 @@ public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterE
 
     private VerticalLayout layout;
     private TravelRequestViewerComponent requestViewer;
+    private Label rejectionMotivation;
     private ExpensesEditorComponent expensesEditor;
     private Button save;
     private Button cancel;
@@ -40,6 +42,12 @@ public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterE
         requestViewer = new TravelRequestViewerComponent();
         layout.addComponent(requestViewer);
 
+        rejectionMotivation = new Label();
+        rejectionMotivation.setCaption("Rejected:");
+        rejectionMotivation.setVisible(false);
+        rejectionMotivation.setStyleName(Reindeer.LABEL_H2);
+        layout.addComponent(rejectionMotivation);
+        
         expensesEditor = new ExpensesEditorComponent();
         expensesEditor.setSizeFull();
         layout.addComponent(expensesEditor);
@@ -79,6 +87,12 @@ public class EnterExpensesFormViewComponent extends TaskFormViewComponent<EnterE
     public void setInvoice(TravelInvoice invoice) {
         requestViewer.setRequest(invoice.getRequest());
         expensesEditor.setExpenses(invoice.getExpenses());
+        if (invoice.getDecision() != null && invoice.getDecision().getDecision() == Decision.DENIED) {
+            rejectionMotivation.setValue(invoice.getDecision().getMotivationOfDecision());
+            rejectionMotivation.setVisible(true);
+        } else {
+            rejectionMotivation.setVisible(false);
+        }
     }
 
     private void saveClick() {

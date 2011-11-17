@@ -31,6 +31,8 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
+        layout.setSizeFull();
+        setSizeFull();
 
         final Label header = new Label("Approve Trip Request");
         header.addStyleName(Reindeer.LABEL_H1);
@@ -41,9 +43,9 @@ public class ApproveTravelRequestFormViewComponent extends TaskFormViewComponent
 
         motivation = new TextArea("Motivation");
         motivation.setRequired(true);
-        motivation.setRows(10);
-        motivation.setWidth("300px");
+        motivation.setSizeFull();
         layout.addComponent(motivation);
+        layout.setExpandRatio(motivation, 1.0f);
 
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setSpacing(true);

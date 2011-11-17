@@ -89,6 +89,7 @@ public class ExpensesEditorComponent extends ExpensesViewerComponent {
         Expense expense = new Expense();
         container.addBean(expense);
         table.setValue(expense);
+        form.focus();
     }
     
     protected void removeItem() {
